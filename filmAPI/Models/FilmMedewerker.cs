@@ -5,11 +5,33 @@ using System.Threading.Tasks;
 
 namespace filmAPI.Models
 {
-    public class Acteur : IPersoon
+    public class FilmMedewerker
     {
+        private int _id;
         private DateTime _geboortedatum;
         private string _naam;
         private int _leeftijd;
+        private string _type;
+        private ICollection<FilmMedewerkerFilm> _films;
+
+        public int Id {
+            get { return _id; }
+            set {
+                _id = value;
+            }
+        }
+
+        public ICollection<FilmMedewerkerFilm> Films
+        {
+            get { return _films; }
+            set
+            {
+                if (value == null) {
+                    value = new List<FilmMedewerkerFilm>();
+                }
+                _films = value;
+            }
+        }
 
         public DateTime Geboortedatum
         {
@@ -18,7 +40,7 @@ namespace filmAPI.Models
             {
                 if (value == null)
                 {
-                    throw new ArgumentException("Acteur moet een geboortedatum hebben");
+                    throw new ArgumentException("Medewerker moet een geboortedatum hebben");
                 }
                 _geboortedatum = value;
             }
@@ -35,7 +57,7 @@ namespace filmAPI.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new ArgumentException("Een acteur moet een naam hebben");
+                    throw new ArgumentException("Een Medewerker moet een naam hebben");
                 }
                 _naam = value;
             }
@@ -45,6 +67,19 @@ namespace filmAPI.Models
         {
             get;
             set;
+        }
+
+        public string Type
+        {
+            get { return _type; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Een Medewerker moet een type hebben");
+                }
+                _type = value;
+            }
         }
 
         private void SetLeeftijd()
@@ -69,12 +104,13 @@ namespace filmAPI.Models
         }
 
 
-        public Acteur(string naam, DateTime geboortedatum, string? geboortestad = "niet bekend", DateTime? sterfdatum = null)
+        public FilmMedewerker(string naam, DateTime geboortedatum, string type, string? geboortestad = "niet bekend", DateTime? sterfdatum = null)
         {
             Naam = naam;
             Geboortedatum = geboortedatum;
             Geboortestad = geboortestad;
             Sterfdatum = sterfdatum;
+            Type = type;
             SetLeeftijd();
         }
 

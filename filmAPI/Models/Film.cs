@@ -7,15 +7,17 @@ namespace filmAPI.Models
 {
     public class Film
     {
+        private int _id;
         private string _titel;
         private string _beschrijving;
         private string _storyline;
         private int _jaar;
         private int _minuten;
-        private List<Categorie> _categorie;
-        private List<string> _schrijvers;
-        private List<string> _regisseurs;
-        private List<string> _acteurs;
+        private List<string> _categorie;
+        private List<FilmMedewerkerFilm> _filmMedewerkers;
+        private ICollection<Rating> _ratings;
+
+        public int Id { get; set; }
 
         public string Titel {
             get { return _titel; }
@@ -80,7 +82,7 @@ namespace filmAPI.Models
                 _minuten = value;
             }
         }
-        public List<Categorie> Categorie {
+        public List<string> Categorie {
             get { return _categorie; }
             set {
                 if (value == null || value.Count == 0)
@@ -90,52 +92,70 @@ namespace filmAPI.Models
                 _categorie = value;
             }
         }
-        public List<string> Schrijvers {
-            get { return _schrijvers; }
-            set {
-                if (value == null || value.Count == 0)
-                {
-                    throw new ArgumentException("Een film heeft minimaal 1 schrijver");
-                }
-                _schrijvers = value;
-                    }
-        }
-        public List<string> Regisseurs {
-            get { return _regisseurs; }
-            set
-            {
-                if (value == null || value.Count == 0)
-                {
-                    throw new ArgumentException("Een film heeft minimaal 1 regisseur.");
-                }
-                _regisseurs = value;
-            }
-        }
-        public List<string> Acteurs {
-            get { return _acteurs; }
+        public List<FilmMedewerkerFilm> FilmMedewerkers
+        {
+            get { return _filmMedewerkers; }
             set
             {
                 if (value == null || value.Count == 0)
                 {
                     throw new ArgumentException("Een film heeft minimaal 1 acteur");
                 }
-                _acteurs = value;
+                _filmMedewerkers = value;
             }
         }
-        public Rating Rating { get; set; }
+        public ICollection<Rating> Ratings
+        {
+            get { return _ratings; }
+            set
+            {
+                if (value == null)
+                {
+                    value = new List<Rating>();
+                }
+                _ratings = value;
+            }
+        }
 
-        public Film(string titel, string beschrijving, string storyline, int jaar, int minuten, Categorie[] categorie, string[] schrijvers, string[] regisseurs, string[] acteurs, Rating? rating = null)
+        public Film(string titel, string beschrijving, string storyline, int jaar, int minuten, string[] categorie, FilmMedewerkerFilm[]filmMedewerkers, ICollection<Rating>? rating = null)
         {
             Titel = titel;
             Beschrijving = beschrijving;
             Storyline = storyline;
             Jaar = jaar;
             Minuten = minuten;
-            Categorie = new List<Categorie>(categorie);
-            Schrijvers = new List<string>(schrijvers);
-            Regisseurs = new List<string>(regisseurs);
-            Acteurs = new List<string>(acteurs);
-            Rating = rating;
+            Categorie = new List<string>(categorie);
+            FilmMedewerkers = new List<FilmMedewerkerFilm>(filmMedewerkers);
+            Ratings = rating;
         }
+
+        public void AddCategorie(string categorie) {
+            Categorie.Add(categorie);
+        }
+
+        public void AddFilmMedewerker(FilmMedewerker filmMedewerker) {
+            FilmMedewerkers.Add(filmMedewerker);
+        }
+
+        public void RemoveCategorie(string categorie)
+        {
+            Categorie.Remove(categorie);
+        }
+
+        public void RemoveCategorie(FilmMedewerker filmMedewerker)
+        {
+            FilmMedewerkers.Remove(filmMedewerker);
+        }
+
+        public string GetByCategorie(string categorie) {
+            return Categorie.FirstOrDefault(b => b == categorie);
+        }
+
+        public FilmMedewerker GetByFilmMedewerker(string type)
+        {
+            return FilmMedewerkers.FirstOrDefault(b => b.Type == type);
+        }
+
+
     }
 }

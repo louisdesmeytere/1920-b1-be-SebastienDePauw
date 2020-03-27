@@ -9,9 +9,16 @@ namespace filmAPI.Models
     {
         private double _score;
         private string _beschrijving;
-        private Gebruikers _gebruiker;
+        private Gebruiker _gebruiker;
         private Film _film;
+        private int _id;
 
+        public int Id {
+            get { return _id; }
+            set {
+                _id = value;
+            }
+        }
         public double Score {
             get { return _score; }
             set {
@@ -45,7 +52,7 @@ namespace filmAPI.Models
             }
         }
 
-        public Gebruikers Gebruiker {
+        public Gebruiker Gebruiker {
             get { return _gebruiker; }
             set {
                 if (value == null) {
@@ -66,7 +73,7 @@ namespace filmAPI.Models
         
         }
 
-        public Rating(double score, Gebruikers gebruiker, Film film, string? beschrijving = null)
+        public Rating(double score, Gebruiker gebruiker, Film film, string? beschrijving = null)
         {
             Score = score;
             Beschrijving = beschrijving;
