@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace filmAPI.DTOs
 {
-    public class FilmDTO
+    public class GebruikerRatingDTO
     {
     }
 }

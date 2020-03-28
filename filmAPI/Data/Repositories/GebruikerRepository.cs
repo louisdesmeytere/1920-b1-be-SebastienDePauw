@@ -22,19 +22,14 @@ namespace filmAPI.Data.Repositories
             _context.Add(gebruiker);
         }
 
-        public Gebruiker GetBy(int id)
+        public Gebruiker GetBy(string email)
         {
-           return _gebruiker.Include(r => r.Ratings).Include(r => r.Seenlist).Include(r => r.Watchlist).SingleOrDefault(e => e.Id == id);
+            return _gebruiker.Include(c => c.Ratings).ThenInclude(f => f.Film).ThenInclude(r => r.Acteurs).SingleOrDefault(c => c.Email == email);
         }
 
         public void SaveChanges()
         {
             _context.SaveChanges();
-        }
-
-        public void Update(Gebruiker gebruiker)
-        {
-            _context.Update(gebruiker);
         }
     }
 }

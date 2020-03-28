@@ -12,7 +12,7 @@ namespace filmAPI.Data.Mappers
     {
         public void Configure(EntityTypeBuilder<Film> builder)
         {
-            builder.ToTable("film");
+           /* builder.ToTable("film");
 
             builder.HasKey(b => b.Id);
 
@@ -23,8 +23,8 @@ namespace filmAPI.Data.Mappers
             builder.Property(b => b.Minuten);
             builder.Property(b => b.Jaar);
 
-            /*builder.HasMany(b => b.Ratings).WithOne(t => t.Film).OnDelete(DeleteBehavior.Cascade);
-            builder.HasMany(b => b.GetFilmMedewerkers).WithOne(t => t.Film).OnDelete(DeleteBehavior.Cascade);*/
+            builder.HasMany(b => b.Ratings).WithOne(t => t.Film).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(b => b.FilmMedewerker).WithOne().OnDelete(DeleteBehavior.Cascade);*/
         }
     }
 }

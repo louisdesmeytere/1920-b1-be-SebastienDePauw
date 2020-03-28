@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace filmAPI.Controllers
 {
+    [ApiConventionType(typeof(DefaultApiConventions))]
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class FilmsController : ControllerBase
@@ -24,12 +26,12 @@ namespace filmAPI.Controllers
         /// </summary>
         /// <returns>array of films</returns>
         [HttpGet]
-        public IEnumerable<Recipe> GetRecipes(string name = null, string chef = null, string ingredientName = null)
+        public IEnumerable<Film> GetAllFilms()
         {
-            if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(chef) && string.IsNullOrEmpty(ingredientName))
-                return _recipeRepository.GetAll();
-            return _recipeRepository.GetBy(name, chef, ingredientName);
+           return _repository.GetAll();
         }
+
+
 
 
     }

@@ -28,36 +28,44 @@ namespace filmAPI.Data.Repositories
             _film.Remove(film);
         }
 
-        public IEnumerable<Film> GetAll()
-        {
-            return _film.Include(r => r.FilmMedewerker).Include(r => r.Ratings).ToList();
-        }
-
-        public Film GetBy(int id)
-        {
-            return _film.Include(r => r.FilmMedewerker).Include(r => r.Ratings).SingleOrDefault(e => e.Id == id) ;
-        }
-
-        public IEnumerable<Film> GetByTitel(string titel)
-        {
-            return _film.Where(e => e.Titel.Contains(titel.Trim())).Include(r => r.FilmMedewerker).Include(r => r.Ratings).ToList();
-        }
-
         public void SaveChanges()
         {
             _context.SaveChanges();
         }
-
-        public bool TryGetFilm(int id, out Film film)
-        {
-            film = _context.Films.Include(r => r.FilmMedewerker).Include(r => r.Ratings).FirstOrDefault(t => t.Id == id);
-            return film != null;
-        }
-
         public void Update(Film film)
         {
             _context.Update(film);
         }
+
+        public IEnumerable<Film> GetAll()
+        {
+            return _film.Include(r => r.Acteurs).Include(r => r.Regisseur).OrderBy(e => e.Titel).ToList();
+        }
+
+        public Film GetBy(int id)
+        {
+            return _film.Include(r => r.Acteurs).Include(r => r.Regisseur).SingleOrDefault(e => e.Id == id) ;
+        }
+
+        public IEnumerable<Film> GetBy(string titel = null, string acteurNaam = null, string regisseurNaam = null)
+        {
+            var films = _film.Include(r => r.Acteurs).Include(r => r.Regisseur).AsQueryable();
+            if (!string.IsNullOrEmpty(titel))
+                films = films.Where(r => r.Titel.IndexOf(titel) >= 0);
+            if (!string.IsNullOrEmpty(acteurNaam))
+                films = films.Where(r => r.Acteurs.Any(i => i.Naam.Equals(acteurNaam)));
+            if (!string.IsNullOrEmpty(regisseurNaam))
+                films = films.Where(r => r.Regisseur.Naam.Equals(regisseurNaam));
+            return films.OrderBy(r => r.Titel).ToList();
+        }
+
+        public bool TryGetFilm(int id, out Film film)
+        {
+            film = _context.Films.Include(r => r.Acteurs).FirstOrDefault(t => t.Id == id);
+            return film != null;
+        }
+
+
     }
 }
 

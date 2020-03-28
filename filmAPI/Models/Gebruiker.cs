@@ -13,11 +13,9 @@ namespace filmAPI.Models
         private ICollection<Film> _watchlist;
         private ICollection<Film> _seenlist;
         private DateTime _created;
-        private ICollection<Rating> _ratings;
+        private Dictionary<Film, double> _ratings;
 
-        public int Id {
-            get;set;
-        }
+        public int Id {get;set;}
         public DateTime Created {
             get { return _created; }
             set {
@@ -58,7 +56,7 @@ namespace filmAPI.Models
                 }
             }
         }
-        public ICollection<Film> Watchlist {
+        public ICollection<Film> SeenList {
             get { return _watchlist; }
             set
             {
@@ -69,50 +67,44 @@ namespace filmAPI.Models
                     _watchlist = value;
             }
         }
-        public ICollection<Film> Seenlist {
-            get { return _seenlist; }
-            set
-            {
-                if (value == null) {
-                    value = new List<Film>();
-                }
-                    _seenlist = value;
-            }
-        }
-        public ICollection<Rating> Ratings {
-            get { return _ratings; }
-            set {
-                if (value == null) {
-                    value = new List<Rating>();
-                }
-                _ratings = value;
-            }
-        }
+        public ICollection<GebruikerRating> Ratings { get; set; }
 
         public Gebruiker() {
-        
+            SeenList = new List<Film>();
         }
 
-        public Gebruiker(string naam, string email, ICollection<Film>? watchlist = null, ICollection<Film>? seenlist = null, ICollection<Rating>? ratings = null)
+        public Gebruiker(string naam, string email)
         {
             Naam = naam;
             Email = email;
-            Watchlist = watchlist;
-            Seenlist = seenlist;
-            Ratings = ratings;
+            Ratings = new List<GebruikerRating>();
             Created = DateTime.Now;
         }
 
-        public void AddFilmWatchlist(Film film) => Watchlist.Add(film);
-        public void AddFilmSeenList(Film film) => Seenlist.Add(film);
-        public void AddRating(Rating rating) => Ratings.Add(rating);
+        public Dictionary<Film, double> GetMijnRatings() {
+            var map = new Dictionary<Film, double>();
+            List<GebruikerRating> ratings = new List<GebruikerRating>(Ratings);
+            ratings.ForEach(e => map.Add(e.Film, e.Rating));
+            return map;
+        }
 
-        public void RemoveFilmWatchList(Film film) => Watchlist.Remove(film);
-        public void RemoveFilmSeenList(Film film) => Seenlist.Remove(film);
-        public void RemoveRating(Rating rating) => Ratings.Remove(rating);
+        public void AddFilmWatchlist(Film film)
+        {
+            Film f = SeenList.FirstOrDefault(film => film.Id == film.Id);
+            if (f != null) RemoveFilmWatchList(f);
+            SeenList.Add(film);
+        }
+        public void AddRating(Film film, int score) {
+            RemoveRating(film);
+            Ratings.Add(new GebruikerRating() { FilmId = film.Id, GebruikerId = Id, Film = film, Gebruiker = this, Rating = score });
+        }
 
-        public IEnumerable<Film> GetFilmWatchedOpTitel(string titel) => Watchlist.Where(i => i.Titel.Equals(titel));
-        public IEnumerable<Film> GetFilmSeenOpTitel(string titel) => Seenlist.Where(i => i.Titel.Equals(titel));
-        public List<Film> GetAllRatingFilms() => Ratings.Select(r => r.Film).ToList();
+        public void RemoveFilmWatchList(Film film) => SeenList.Remove(film);
+        public void RemoveRating(Film film) { 
+            Ratings.Where(e => e.GebruikerId == Id && e.FilmId == film.Id).ToList().ForEach(e => Ratings.Remove(e)); 
+        }
+
+        public IEnumerable<Film> GetFilmsWatchedOpTitel(string titel) => SeenList.Where(i => i.Titel.Contains(titel.ToLower().Trim()));
+        public List<Film> GetAllGeratedFilms() => Ratings.Select(r => r.Film).ToList();
     }
 }

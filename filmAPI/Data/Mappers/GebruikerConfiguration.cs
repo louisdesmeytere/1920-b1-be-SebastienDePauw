@@ -19,8 +19,8 @@ namespace filmAPI.Data.Mappers
             builder.Property(b => b.Naam);
             builder.Property(b => b.Email);
 
-            builder.HasMany(b => b.Watchlist).WithOne().IsRequired(false).OnDelete(DeleteBehavior.Cascade);
-            builder.HasMany(b => b.Seenlist).WithOne().IsRequired(false).OnDelete(DeleteBehavior.Cascade);
+            //builder.HasMany(b => b.Watchlist).WithOne().IsRequired(false).HasForeignKey(e => e.Id).OnDelete(DeleteBehavior.ClientSetNull);
+            //builder.HasMany(b => b.Seenlist).WithOne().IsRequired(false).HasForeignKey(e => e.Id).OnDelete(DeleteBehavior.ClientSetNull);
             builder.HasMany(b => b.Ratings).WithOne(b => b.Gebruiker).IsRequired(false).OnDelete(DeleteBehavior.Cascade);*/
         }
     }

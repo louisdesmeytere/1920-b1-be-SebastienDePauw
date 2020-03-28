@@ -35,9 +35,7 @@ namespace filmAPI
             services.AddSwaggerDocument();
             services.AddScoped<DataInitializer>();
             services.AddScoped<IGebruikerRepository, GebruikerRepository>();
-            services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IFilmRepository, FilmRepository>();
-            services.AddScoped<IFilmMedewerkerRepository, FilmMedewerkerRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

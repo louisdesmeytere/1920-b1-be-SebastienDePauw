@@ -7,9 +7,8 @@ namespace filmAPI.Models
 {
     interface IGebruikerRepository
     {
-        Gebruiker GetBy(int id);
+        Gebruiker GetBy(string email);
         void Add(Gebruiker gebruiker);
-        void Update(Gebruiker gebruiker);
         void SaveChanges();
     }
 }

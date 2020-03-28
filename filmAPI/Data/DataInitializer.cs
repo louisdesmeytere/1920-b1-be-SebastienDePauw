@@ -1,4 +1,5 @@
 ﻿using filmAPI.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,77 +10,59 @@ namespace filmAPI.Data
     public class DataInitializer
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public DataInitializer(ApplicationDbContext dbContext)
+        public DataInitializer(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)
         {
             _dbContext = dbContext;
+            _userManager = userManager;
         }
 
-        public void initializeData()
+        public async Task initializeData()
         {
             _dbContext.Database.EnsureDeleted();
             if (_dbContext.Database.EnsureCreated())
             {
-                Gebruiker tom =  new Gebruiker("Tom", "Tom@Hotmail.com");
-                Gebruiker jan = new Gebruiker("Jan", "Jan@Hotmail.com");
-                Gebruiker lisa = new Gebruiker("Lisa", "Lisa@Hotmail.com");
-                Gebruiker jef = new Gebruiker("Jef", "Jef@Hotmail.com");
-                Gebruiker bart = new Gebruiker("Bart", "Bart@Hotmail.com");
-                Gebruiker geert = new Gebruiker("Geert", "Geert@Hotmail.com");
-                Gebruiker julie = new Gebruiker("Julie", "Julie@Hotmail.com");
-                Gebruiker lore = new Gebruiker("Lore", "Lore@Hotmail.com");
+                Acteur acteur1 = new Acteur("Tom",new DateTime(1990,12,1));
+                Acteur acteur2 = new Acteur("Bart", new DateTime(1980, 11, 1));
+                Acteur acteur3 = new Acteur("Jef",new DateTime(1970, 10, 1));
+                Acteur acteur4 = new Acteur("Julie", new DateTime(1960, 1, 1), new DateTime(2017, 12, 1));
+                Acteur acteur5 = new Acteur("Lore", new DateTime(1950, 5, 20), new DateTime(2019, 9, 17));
 
-                Gebruiker[] gebr = new Gebruiker[] { tom, jan, lisa, jef, bart, geert, julie, lore };
+                Regisseur regisseur1 = new Regisseur("Geert", new DateTime(1950, 5, 20), new DateTime(2019, 9, 17));
+                Regisseur regisseur2 = new Regisseur("Lotte", new DateTime(1945, 4, 30));
 
-                FilmMedewerker a = new FilmMedewerker("Jake Lloyd", new DateTime(1999, 12, 24), "Acteur",null, new DateTime(2017, 12, 24), "Anakin");
-                FilmMedewerker b = new FilmMedewerker("Ewan McGregor", new DateTime(1979, 5, 1), "Acteur", "Gent", null, "Anakin");
-                FilmMedewerker c = new FilmMedewerker("Jake Lloyd", new DateTime(1999, 12, 24), "Acteur", null, new DateTime(2000, 12, 24), "Anakin");
-                FilmMedewerker d = new FilmMedewerker("Ewan McGregor", new DateTime(1979, 5, 1), "Acteur", null, null, "Anakin");
-                FilmMedewerker e = new FilmMedewerker("Jake Lloyd", new DateTime(1999, 12, 24), "Acteur", "New York", new DateTime(1999, 12, 24), "Anakin");
-                FilmMedewerker f = new FilmMedewerker("Ewan McGregor", new DateTime(1979, 5, 1), "Acteur", "Kopenhagen", null, "Anakin");
-                FilmMedewerker g = new FilmMedewerker("Jake Lloyd", new DateTime(1999, 12, 24), "Acteur", null, null, "Anakin");
-                FilmMedewerker h = new FilmMedewerker("Ewan McGregor", new DateTime(1979, 5, 1), "Acteur", "Denver", null, "Anakin");
-                FilmMedewerker i = new FilmMedewerker("Jake Lloyd", new DateTime(1999, 12, 24), "Acteur", "Los Angeles", null, "Anakin");
-                FilmMedewerker j = new FilmMedewerker("Ewan McGregor", new DateTime(1979, 5, 1), "Acteur", null, null, "Anakin");
+                Film film1 = new Film("Star Wars", "beschrijving", "story", 2000, 135, "Sciencefiction");
+                film1.AddActeur(acteur1);
+                film1.AddActeur(acteur2);
+                film1.AddActeur(acteur3);
+                film1.SetRegisseur(regisseur1);
+                
 
-                FilmMedewerker k = new FilmMedewerker("Jake Lloyd", new DateTime(1950, 4, 26), "Schrijver");
-                FilmMedewerker l = new FilmMedewerker("Jake Lloyd", new DateTime(1950, 4, 26), "Schrijver");
-                FilmMedewerker m = new FilmMedewerker("Jake Lloyd", new DateTime(1950, 4, 26), "Schrijver");
-                FilmMedewerker n = new FilmMedewerker("Jake Lloyd", new DateTime(1950, 4, 26), "Schrijver");
-                FilmMedewerker o = new FilmMedewerker("Jake Lloyd", new DateTime(1950, 4, 26), "Schrijver");
+                Film film2 = new Film("Pulp Fiction", "beschrijving", "story",1990,120,"Actie");
+                film2.AddActeur(acteur3);
+                film2.AddActeur(acteur4);
+                film2.AddActeur(acteur5);
+                film2.SetRegisseur(regisseur2);
+                
 
-                FilmMedewerker p = new FilmMedewerker("Jake Lloyd", new DateTime(1969, 1, 17), "Regisseur");
-                FilmMedewerker q = new FilmMedewerker("Jake Lloyd", new DateTime(1980, 10, 22), "Regisseur");
-                FilmMedewerker r = new FilmMedewerker("Jake Lloyd", new DateTime(1969, 1, 17), "Regisseur");
-                FilmMedewerker s = new FilmMedewerker("Jake Lloyd", new DateTime(1980, 10, 22), "Regisseur");
-                FilmMedewerker t = new FilmMedewerker("Jake Lloyd", new DateTime(1969, 1, 17), "Regisseur");
+                Gebruiker gebruiker1 = new Gebruiker("Piet","piet@hotmail.com");
+                gebruiker1.AddRating(film1, 9);
+                _dbContext.Gebruikers.Add(gebruiker1);
+                await CreateUser(gebruiker1.Email, "test1");
+                Gebruiker gebruiker2 = new Gebruiker("Sebastien", "Sebastien@hotmail.com");
+                _dbContext.Gebruikers.Add(gebruiker2);
+                await CreateUser(gebruiker2.Email, "test1");
 
-                FilmMedewerker[] fm = new FilmMedewerker[] { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t };
-
-
-                Film starWars1 = new Film("Star Wars: Episode I: The Phantom Menace", "beschrijving", "story",1999,136, "siencefiction" , new List<FilmMedewerker> {a, b,c,d});
-                Film starWars4 = new Film("Star Wars: Episode II: The Phantom", "beschrijving", "story", 2000, 136, "siencefiction" , new List<FilmMedewerker> { e,f,g,h });
-                Film titanic = new Film("titanic", "beschrijving", "story", 2000, 136, "Avontuur", new List<FilmMedewerker> { i,j,k,l });
-                Film ff = new Film("fast and furious", "beschrijving", "story", 2000, 136, "siencefiction" , new List<FilmMedewerker> {m,n,o,p });
-                Film saw1 = new Film("Saw", "beschrijving", "story", 2000, 136, "Avontuur", new List<FilmMedewerker> { q,r,s,t});
-
-                Film[] film = new Film[] { starWars1, starWars4, titanic, ff, saw1 };
-
-                julie.AddFilmSeenList(ff);
-                julie.AddFilmWatchlist(saw1);
-
-                Rating rating = new Rating(10, julie, ff, "goede film");
-                Rating rating1 = new Rating(5, tom,titanic, "saai");
-
-                Rating[] rat = new Rating[] { rating,rating1 };
-
-                _dbContext.Gebruikers.AddRange(gebr);
-                _dbContext.FilmMedewerkers.AddRange(fm);
-                _dbContext.Films.AddRange(film);
-                _dbContext.Ratings.AddRange(rat);
-
+                _dbContext.Add(film1);
+                _dbContext.Add(film2);
                 _dbContext.SaveChanges();
             }
+        }
+        private async Task CreateUser(string email, string password)
+        {
+            var gebruiker = new IdentityUser { UserName = email, Email = email };
+            await _userManager.CreateAsync(gebruiker, password);
         }
     }
 }
