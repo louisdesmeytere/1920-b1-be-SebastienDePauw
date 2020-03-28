@@ -11,13 +11,11 @@ namespace filmAPI.Models
         private string _beschrijving;
         private Gebruiker _gebruiker;
         private Film _film;
-        private int _id;
+
 
         public int Id {
-            get { return _id; }
-            set {
-                _id = value;
-            }
+            get;
+            set;
         }
         public double Score {
             get { return _score; }
@@ -72,6 +70,8 @@ namespace filmAPI.Models
             }
         
         }
+
+        public Rating() { }
 
         public Rating(double score, Gebruiker gebruiker, Film film, string? beschrijving = null)
         {

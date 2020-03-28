@@ -12,7 +12,7 @@ namespace filmAPI.Data.Mappers
     {
         public void Configure(EntityTypeBuilder<Rating> builder)
         {
-            builder.ToTable("rating");
+/*            builder.ToTable("rating");
 
             builder.HasKey(b => b.Id);
 
@@ -20,7 +20,7 @@ namespace filmAPI.Data.Mappers
             builder.Property(t => t.Beschrijving).IsRequired(false);
 
             builder.HasOne(b => b.Film).WithMany(t => t.Ratings).IsRequired(true).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(b => b.Gebruiker).WithMany(t => t.Ratings).IsRequired(true).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(b => b.Gebruiker).WithMany(t => t.Ratings).IsRequired(true).OnDelete(DeleteBehavior.Cascade);*/
         }
     }
 }

@@ -7,32 +7,32 @@ namespace filmAPI.Models
 {
     public class FilmMedewerker
     {
-        private int _id;
         private DateTime _geboortedatum;
         private string _naam;
         private int _leeftijd;
         private string _type;
-        private ICollection<FilmMedewerkerFilm> _films;
+        private string _rol;
 
         public int Id {
-            get { return _id; }
-            set {
-                _id = value;
-            }
+            get;
+            set;
         }
-
-        public ICollection<FilmMedewerkerFilm> Films
-        {
-            get { return _films; }
-            set
-            {
-                if (value == null) {
-                    value = new List<FilmMedewerkerFilm>();
-                }
-                _films = value;
-            }
+        public string Rol {
+            /*            get { return _rol; }
+                        set {
+                            if(value != null) {
+                                if (_type.ToLower().Equals("acteur"))
+                                {
+                                    _rol = value;
+                                }
+                                else { throw new ArgumentException("Alleen een acteur mag een rol hebben"); }
+                            }
+                            else {
+                                throw new ArgumentException("Een acteur moet een rol spelen");
+                            }
+                        } */
+            get;set;
         }
-
         public DateTime Geboortedatum
         {
             get { return _geboortedatum; }
@@ -62,13 +62,11 @@ namespace filmAPI.Models
                 _naam = value;
             }
         }
-
         public string Geboortestad
         {
             get;
             set;
         }
-
         public string Type
         {
             get { return _type; }
@@ -81,7 +79,6 @@ namespace filmAPI.Models
                 _type = value;
             }
         }
-
         private void SetLeeftijd()
         {
             if (Sterfdatum != null)
@@ -97,22 +94,21 @@ namespace filmAPI.Models
                 if (_geboortedatum.Date > today.AddYears(-_leeftijd)) _leeftijd--;
             }
         }
-
         public int GetLeeftijd()
         {
             return _leeftijd;
         }
 
 
-        public FilmMedewerker(string naam, DateTime geboortedatum, string type, string? geboortestad = "niet bekend", DateTime? sterfdatum = null)
+        public FilmMedewerker(string naam, DateTime geboortedatum, string type,  string? geboortestad = "niet bekend", DateTime? sterfdatum = null, string? rol = null)
         {
             Naam = naam;
             Geboortedatum = geboortedatum;
             Geboortestad = geboortestad;
             Sterfdatum = sterfdatum;
             Type = type;
+            Rol = rol;
             SetLeeftijd();
         }
-
     }
 }

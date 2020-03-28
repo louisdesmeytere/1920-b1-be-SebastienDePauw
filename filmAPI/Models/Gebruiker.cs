@@ -8,21 +8,16 @@ namespace filmAPI.Models
 {
     public class Gebruiker
     {
-        private int _id;
         private string _naam;
         private MailAddress _email;
-        private List<Film> _watchlist;
-        private List<Film> _seenlist;
+        private ICollection<Film> _watchlist;
+        private ICollection<Film> _seenlist;
         private DateTime _created;
         private ICollection<Rating> _ratings;
 
         public int Id {
-            get { return _id; }
-            set {
-                _id = value;
-            }
+            get;set;
         }
-
         public DateTime Created {
             get { return _created; }
             set {
@@ -31,7 +26,6 @@ namespace filmAPI.Models
                 }
             }
         }
-
         public string Naam {
             get { return _naam; }
             set {
@@ -64,7 +58,7 @@ namespace filmAPI.Models
                 }
             }
         }
-        public List<Film> Watchlist {
+        public ICollection<Film> Watchlist {
             get { return _watchlist; }
             set
             {
@@ -75,7 +69,7 @@ namespace filmAPI.Models
                     _watchlist = value;
             }
         }
-        public List<Film> Seenlist {
+        public ICollection<Film> Seenlist {
             get { return _seenlist; }
             set
             {
@@ -85,7 +79,6 @@ namespace filmAPI.Models
                     _seenlist = value;
             }
         }
-
         public ICollection<Rating> Ratings {
             get { return _ratings; }
             set {
@@ -96,7 +89,11 @@ namespace filmAPI.Models
             }
         }
 
-        public Gebruiker(string naam, string email, List<Film>? watchlist = null, List<Film>? seenlist = null, ICollection<Rating>? ratings = null)
+        public Gebruiker() {
+        
+        }
+
+        public Gebruiker(string naam, string email, ICollection<Film>? watchlist = null, ICollection<Film>? seenlist = null, ICollection<Rating>? ratings = null)
         {
             Naam = naam;
             Email = email;
@@ -110,7 +107,12 @@ namespace filmAPI.Models
         public void AddFilmSeenList(Film film) => Seenlist.Add(film);
         public void AddRating(Rating rating) => Ratings.Add(rating);
 
-        public List<Film> GetFilmWatchedOpTitel(String titel) => Watchlist.FindAll(i => i.Titel.Equals(titel));
-        public List<Film> GetFilmSeenOpTitel(String titel) => Seenlist.FindAll(i => i.Titel.Equals(titel));
+        public void RemoveFilmWatchList(Film film) => Watchlist.Remove(film);
+        public void RemoveFilmSeenList(Film film) => Seenlist.Remove(film);
+        public void RemoveRating(Rating rating) => Ratings.Remove(rating);
+
+        public IEnumerable<Film> GetFilmWatchedOpTitel(string titel) => Watchlist.Where(i => i.Titel.Equals(titel));
+        public IEnumerable<Film> GetFilmSeenOpTitel(string titel) => Seenlist.Where(i => i.Titel.Equals(titel));
+        public List<Film> GetAllRatingFilms() => Ratings.Select(r => r.Film).ToList();
     }
 }

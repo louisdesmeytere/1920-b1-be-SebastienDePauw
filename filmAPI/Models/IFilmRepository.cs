@@ -10,9 +10,9 @@ namespace filmAPI.Models
         Film GetBy(int id);
         bool TryGetFilm(int id, out Film film);
         IEnumerable<Film> GetAll();
-        IEnumerable<Film> GetByTitel(string titel = null);
+        IEnumerable<Film> GetByTitel(string titel);
         void Add(Film film);
-        void Delete(Film film);
+        void Remove(Film film);
         void Update(Film film);
         void SaveChanges();
     }

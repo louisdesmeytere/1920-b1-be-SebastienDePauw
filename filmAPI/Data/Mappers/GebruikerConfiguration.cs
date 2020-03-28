@@ -12,7 +12,7 @@ namespace filmAPI.Data.Mappers
     {
         public void Configure(EntityTypeBuilder<Gebruiker> builder)
         {
-            builder.ToTable("gebruiker");
+/*            builder.ToTable("gebruiker");
 
             builder.HasKey(g => g.Id);
 
@@ -21,7 +21,7 @@ namespace filmAPI.Data.Mappers
 
             builder.HasMany(b => b.Watchlist).WithOne().IsRequired(false).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(b => b.Seenlist).WithOne().IsRequired(false).OnDelete(DeleteBehavior.Cascade);
-            builder.HasMany(b => b.Ratings).WithOne(b => b.Gebruiker).IsRequired(false).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(b => b.Ratings).WithOne(b => b.Gebruiker).IsRequired(false).OnDelete(DeleteBehavior.Cascade);*/
         }
     }
 }

@@ -3,49 +3,61 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using filmAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace filmAPI.Data.Repositories
 {
     public class FilmRepository : IFilmRepository
     {
-        public void Add(Film film)
+        private readonly ApplicationDbContext _context;
+        private readonly DbSet<Film> _film;
+
+        public FilmRepository(ApplicationDbContext dbContext)
         {
-            throw new NotImplementedException();
+            _context = dbContext;
+            _film = dbContext.Films;
         }
 
-        public void Delete(Film film)
+        public void Add(Film film)
         {
-            throw new NotImplementedException();
+            _film.Add(film);
+        }
+
+        public void Remove(Film film)
+        {
+            _film.Remove(film);
         }
 
         public IEnumerable<Film> GetAll()
         {
-            throw new NotImplementedException();
+            return _film.Include(r => r.FilmMedewerker).Include(r => r.Ratings).ToList();
         }
 
         public Film GetBy(int id)
         {
-            throw new NotImplementedException();
+            return _film.Include(r => r.FilmMedewerker).Include(r => r.Ratings).SingleOrDefault(e => e.Id == id) ;
         }
 
-        public IEnumerable<Film> GetByTitel(string titel = null)
+        public IEnumerable<Film> GetByTitel(string titel)
         {
-            throw new NotImplementedException();
+            return _film.Where(e => e.Titel.Contains(titel.Trim())).Include(r => r.FilmMedewerker).Include(r => r.Ratings).ToList();
         }
 
         public void SaveChanges()
         {
-            throw new NotImplementedException();
+            _context.SaveChanges();
         }
 
         public bool TryGetFilm(int id, out Film film)
         {
-            throw new NotImplementedException();
+            film = _context.Films.Include(r => r.FilmMedewerker).Include(r => r.Ratings).FirstOrDefault(t => t.Id == id);
+            return film != null;
         }
 
         public void Update(Film film)
         {
-            throw new NotImplementedException();
+            _context.Update(film);
         }
     }
 }
+

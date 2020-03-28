@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,18 +8,14 @@ namespace filmAPI.Models
 {
     public class Film
     {
-        private int _id;
         private string _titel;
         private string _beschrijving;
         private string _storyline;
         private int _jaar;
         private int _minuten;
-        private List<string> _categorie;
-        private List<FilmMedewerkerFilm> _filmMedewerkers;
-        private ICollection<Rating> _ratings;
+        private ICollection<String> _categorie;
 
         public int Id { get; set; }
-
         public string Titel {
             get { return _titel; }
             set {
@@ -39,7 +36,6 @@ namespace filmAPI.Models
                     _beschrijving = value;
             }
         }
-
         public string Storyline
         {
             get { return _storyline; }
@@ -82,50 +78,28 @@ namespace filmAPI.Models
                 _minuten = value;
             }
         }
-        public List<string> Categorie {
-            get { return _categorie; }
-            set {
-                if (value == null || value.Count == 0)
-                {
-                    throw new ArgumentException("Geef een of meerdere geldige categorieën");
-                }
-                _categorie = value;
-            }
+        public string Categorie {
+            get;set;
         }
-        public List<FilmMedewerkerFilm> FilmMedewerkers
-        {
-            get { return _filmMedewerkers; }
-            set
-            {
-                if (value == null || value.Count == 0)
-                {
-                    throw new ArgumentException("Een film heeft minimaal 1 acteur");
-                }
-                _filmMedewerkers = value;
-            }
-        }
-        public ICollection<Rating> Ratings
-        {
-            get { return _ratings; }
-            set
-            {
-                if (value == null)
-                {
-                    value = new List<Rating>();
-                }
-                _ratings = value;
-            }
+        public ICollection<FilmMedewerker> FilmMedewerker { get; set; }
+        public ICollection<Rating> Ratings{get;set;}
+
+        public Film() {
         }
 
-        public Film(string titel, string beschrijving, string storyline, int jaar, int minuten, string[] categorie, FilmMedewerkerFilm[]filmMedewerkers, ICollection<Rating>? rating = null)
+        public Film(string titel, string beschrijving, string storyline, int jaar, int minuten, string categorie,ICollection<FilmMedewerker> filmMedewerkers) : this()
         {
             Titel = titel;
             Beschrijving = beschrijving;
             Storyline = storyline;
             Jaar = jaar;
             Minuten = minuten;
-            Categorie = new List<string>(categorie);
-            FilmMedewerkers = new List<FilmMedewerkerFilm>(filmMedewerkers);
+            Categorie = categorie;
+            FilmMedewerker = filmMedewerkers;
+        }
+
+        public Film(string titel, string beschrijving, string storyline, int jaar, int minuten, ICollection<String> categorie, ICollection<FilmMedewerker> filmMedewerkers, ICollection<Rating> rating) : this(titel, beschrijving, storyline, jaar, minuten, categorie, filmMedewerkers)
+        {
             Ratings = rating;
         }
 
@@ -134,7 +108,11 @@ namespace filmAPI.Models
         }
 
         public void AddFilmMedewerker(FilmMedewerker filmMedewerker) {
-            FilmMedewerkers.Add(filmMedewerker);
+            FilmMedewerker.Add(filmMedewerker);
+        }
+
+        public void AddRating(Rating rating) {
+            Ratings.Add(rating);
         }
 
         public void RemoveCategorie(string categorie)
@@ -142,9 +120,14 @@ namespace filmAPI.Models
             Categorie.Remove(categorie);
         }
 
-        public void RemoveCategorie(FilmMedewerker filmMedewerker)
+        public void RemoveFilmMedewerker(FilmMedewerker filmMedewerker)
         {
-            FilmMedewerkers.Remove(filmMedewerker);
+            FilmMedewerker.Remove(filmMedewerker);
+        }
+
+        public void Remove(Rating rating)
+        {
+            Ratings.Add(rating);
         }
 
         public string GetByCategorie(string categorie) {
@@ -153,7 +136,7 @@ namespace filmAPI.Models
 
         public FilmMedewerker GetByFilmMedewerker(string type)
         {
-            return FilmMedewerkers.FirstOrDefault(b => b.Type == type);
+            return  FilmMedewerker.FirstOrDefault(b => b.Type == type);
         }
 
 

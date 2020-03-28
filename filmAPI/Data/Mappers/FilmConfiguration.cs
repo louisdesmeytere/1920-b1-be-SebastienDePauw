@@ -19,12 +19,12 @@ namespace filmAPI.Data.Mappers
             builder.Property(b => b.Titel);
             builder.Property(b => b.Beschrijving);
             builder.Property(b => b.Storyline);
-            builder.Property(b => b.Categorie);
+            builder.Property(b => b.Categorie).HasMaxLength(100);
             builder.Property(b => b.Minuten);
             builder.Property(b => b.Jaar);
 
-            builder.HasMany(b => b.Ratings).WithOne(t => t.Film).OnDelete(DeleteBehavior.Cascade);
-            builder.HasMany(b => b.FilmMedewerkers).WithOne(t => t.Film).OnDelete(DeleteBehavior.Cascade);
+            /*builder.HasMany(b => b.Ratings).WithOne(t => t.Film).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(b => b.GetFilmMedewerkers).WithOne(t => t.Film).OnDelete(DeleteBehavior.Cascade);*/
         }
     }
 }
