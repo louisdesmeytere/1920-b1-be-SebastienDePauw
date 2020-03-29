@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace filmAPI.Data
@@ -75,12 +76,6 @@ namespace filmAPI.Data
         {
             var gebruiker = new IdentityUser { UserName = email, Email = email };
             await _userManager.CreateAsync(gebruiker, password);
-        }
-
-        public async Task InitUser() {
-            string email = "admin@msn.be";
-            IdentityUser gebruiker = new IdentityUser { UserName = email, Email = email };
-            await _userManager.CreateAsync(gebruiker, "P@ssword1");
         }
     }
 }

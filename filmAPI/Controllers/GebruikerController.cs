@@ -1,5 +1,6 @@
 ﻿using filmAPI.DTOs;
 using filmAPI.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -27,34 +28,13 @@ namespace filmAPI.Controllers
         /// </summary>
         /// <returns>array van gebruiker</returns>
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IEnumerable<Gebruiker> GetGebruikers()
         {
                 return _gebruikerRepo.GetAll();
         }
 
-        // GET: api/Gebruiker
-        /// <summary>
-        /// Geef alle gebruikers terug geordend op naam
-        /// </summary>
-        /// <returns>array van gebruiker</returns>
-        [HttpGet]
-        [AllowAnonymous]
-        public IEnumerable<Gebruiker> GetGebruikersFilms()
-        {
-            return _gebruikerRepo.GetAllFilms();
-        }
 
-        // GET: api/Gebruiker
-        /// <summary>
-        /// Geef alle gebruikers terug geordend op naam
-        /// </summary>
-        /// <returns>array van gebruiker</returns>
-        [HttpGet]
-        [AllowAnonymous]
-        public IEnumerable<Gebruiker> GetGebruikersRating()
-        {
-            return _gebruikerRepo.GetAllRatings();
-        }
+
     }
 }

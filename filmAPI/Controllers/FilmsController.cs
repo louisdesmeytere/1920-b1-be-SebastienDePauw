@@ -14,6 +14,7 @@ namespace filmAPI.Controllers
     [ApiConventionType(typeof(DefaultApiConventions))]
     [Produces("application/json")]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class FilmsController : ControllerBase
     {
@@ -32,7 +33,7 @@ namespace filmAPI.Controllers
         /// </summary>
         /// <returns>array van films</returns>
         [HttpGet]
-        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IEnumerable<Film> GetFilms(string titel = null, string acteurNaam = null, string regisseurNaam = null)
         {
             if (string.IsNullOrWhiteSpace(titel) && string.IsNullOrWhiteSpace(acteurNaam) && string.IsNullOrWhiteSpace(regisseurNaam))
@@ -47,7 +48,8 @@ namespace filmAPI.Controllers
         /// <param name="id">id van de film</param>
         /// <returns>een film</returns>
         [HttpGet("{id}")]
-
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Film> GetFilm(int id)
         {
             Film f = _filmRepo.GetBy(id);
@@ -61,7 +63,8 @@ namespace filmAPI.Controllers
         /// </summary>
         /// <param name="film">de nieuwe film</param>
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Film> PostMovie(FilmDTO film)
         {
             Film f = new Film() { Titel = film.Titel, Beschrijving = film.Beschrijving, Storyline = film.Storyline, Jaar = film.Jaar, Minuten = film.Minuten, Categorie = film.Categorie};
@@ -81,7 +84,9 @@ namespace filmAPI.Controllers
         /// <param name="id">id van de film die moet aangepast worden</param>
         /// <param name="film">de herziene film</param>
         [HttpPut("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult PutFilm(int id, Film film)
         {
             if (film.Id != id) return BadRequest();
@@ -96,7 +101,9 @@ namespace filmAPI.Controllers
         /// </summary>
         /// <param name="id">het id van de film die je wil deleten</param>
         [HttpDelete("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Film> DeleteMovie(int id)
         {
             Film movie = _filmRepo.GetBy(id);
@@ -109,13 +116,14 @@ namespace filmAPI.Controllers
             return movie;
         }
 
+        //GET: api/Films/1/Acteurs
         /// <summary>
-        /// Geef een acteur van een film
+        /// Geef alle acteurs van een film
         /// </summary>
-        /// <param name="id">het id van de film</param>
-        /// <param name="actId">id van de acteur</param>
-        [HttpGet("{id}/acteurs/{actId}")]
-        public ActionResult<Acteur> GetActor(int id, int actId)
+        /// /// <param name="id">Het id van de film</param>
+        [HttpGet("{id}/Acteurs")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<Acteur> GetAlleActeurs(int id)
         {
             if (!_filmRepo.TryGetFilm(id, out var film))
             {
@@ -126,12 +134,33 @@ namespace filmAPI.Controllers
             return acteur;
         }
 
+        //GET: api/Films/Acteurs/1
+        /// <summary>
+        /// Geef een acteur van een film op id
+        /// </summary>
+        /// <param name="id">Het id van de film</param>
+        /// <param name="acteurId">id van de acteur</param>
+        [HttpGet("{id}/acteurs/{acteurId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<Acteur> GetActeurById(int id, int acteurId)
+        {
+            if (!_filmRepo.TryGetFilm(id, out var film))
+            {
+                return NotFound();
+            }
+            Acteur acteur = film.GetActeurById(actId);
+            if (acteur == null) return NotFound();
+            return acteur;
+        }
+
+        //POST: api/Films/Acteurs
         /// <summary>
         /// Voeg een acteur toe aan een film
         /// </summary>
         /// <param name="id">het id van de film</param>
         /// <param name="acteur">the acteur die moeten worden toegevoegd</param>
         [HttpPost("{id}/acteur")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Acteur> PostActor(int id, ActeurDTO acteur)
         {
             if (!_filmRepo.TryGetFilm(id, out var film))
@@ -142,6 +171,27 @@ namespace filmAPI.Controllers
             film.AddActeur(act);
             _filmRepo.SaveChanges();
             return CreatedAtAction("GetActeur", new { id = film.Id, actorId = act.Id }, act);
+        }
+
+        // DELETE: api/Films/Acteur/1
+        /// <summary>
+        /// Een acteur deleten
+        /// </summary>
+        /// <param name="id">het id van de acteur die je wil deleten</param>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<Film> DeleteActeur(int id, Film film)
+        {
+            Film movie = _filmRepo.GetBy(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            _filmRepo.Delete(movie);
+            _filmRepo.SaveChanges();
+            return movie;
         }
     }
 }

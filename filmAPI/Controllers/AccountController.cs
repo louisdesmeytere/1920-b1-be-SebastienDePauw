@@ -36,6 +36,10 @@ namespace filmAPI.Controllers
             _config = config;
         }
 
+        /// <summary>
+        /// Login
+        /// </summary>
+        /// <param name="login">de datails van de login </param>
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<String>> CreateToken(LoginDTO login)
@@ -53,6 +57,41 @@ namespace filmAPI.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// register
+        /// </summary>
+        /// <param name="model">de datails van de registratie </param>
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<ActionResult<String>> Register(RegisterDTO model)
+        {
+            IdentityUser user = new IdentityUser { UserName = model.Email, Email = model.Email };
+            Gebruiker gebruiker = new Gebruiker { Email = model.Email, Naam = model.FirstName + model.LastName };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                _gebruikerRepository.Add(gebruiker);
+                _gebruikerRepository.SaveChanges();
+                string token = GetToken(user);
+                return Created("", token);
+            }
+            return BadRequest();
+        }
+
+        /// <summary>
+        /// Kijkt of email vrij is als inlog
+        /// </summary>
+        /// <returns>boolean die true returned als de email vrij is</returns>
+        /// <param name="email">Email.</param>/
+        [AllowAnonymous]
+        [HttpGet("checkusername")]
+        public async Task<ActionResult<Boolean>> CheckAvailableUserName(string email)
+        {
+            var user = await _userManager.FindByNameAsync(email);
+            return user == null;
+        }
+
+
         private String GetToken(IdentityUser user)
         { // Create the token
             var claims = new[] {
@@ -66,27 +105,6 @@ namespace filmAPI.Controllers
             expires: DateTime.Now.AddMinutes(30),
             signingCredentials: creds);
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        [AllowAnonymous]
-        [HttpPost("register")]
-        public async Task<ActionResult<String>> Register(RegisterDTO model)
-        {
-            IdentityUser user = new IdentityUser { UserName = model.Email, Email = model.Email };
-            Gebruiker gebruiker = new Gebruiker
-            {
-                Email = model.Email,
-                Naam = model.FirstName + model.LastName
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                _gebruikerRepository.Add(gebruiker);
-                _gebruikerRepository.SaveChanges();
-                string token = GetToken(user);
-                return Created("", token);
-            }
-            return BadRequest();
         }
     }
 }

@@ -95,7 +95,7 @@ namespace filmAPI
             {
                 endpoints.MapControllers();
             });
-            //dataInitializer.initializeData().Wait();
+            dataInitializer.initializeData().Wait();
         }
     }
 }

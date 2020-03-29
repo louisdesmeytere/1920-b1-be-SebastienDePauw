@@ -64,6 +64,36 @@ namespace filmAPI.Data.Repositories
             film = _context.Films.Include(r => r.Acteurs).FirstOrDefault(t => t.Id == id);
             return film != null;
         }
+
+        public IEnumerable<Film> GetBy(string titel = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Acteur> GetAllActeurs(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Acteur> GetActeurBy(string acteurNaam = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Acteur GetActeurBy(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(Acteur acteur)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(Acteur acteur)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 
