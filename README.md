@@ -1,6 +1,15 @@
 # Backend
 Dit is de backend van mijn film applicatie
 
+## Concept
+Het doel van mijn webapplicatie is het bijhouden van een lijst van film die een gebruiker zou willen zien. Het moet ook mogelijk zijn om deze film een rating te geven op 10. Dit zou alleen kunnen als een gebruiker zich eerst aanmeld.
+
+Het doel is om op het einde van het toernooi bovenaan de ranking te komen.
+Stijgen doe je door mensen boven je uit te dagen. Als er gewonnen wordt verwisselen de twee spelers van plaats.
+
+Momenteel zijn er twee toernooien, een voor mannen en een voor vrouwen.
+Nu kan de applicatie dus gebruikt worden voor 1 tennisclub
+
 ## Users
 Naam gebruiker | Email | Passwoord
 ------------ | ------------- | -------------
