@@ -1,6 +1,8 @@
 ﻿using filmAPI.DTOs;
 using filmAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace filmAPI.Controllers
 {
@@ -10,18 +12,49 @@ namespace filmAPI.Controllers
     [ApiController]
     public class GebruikerController : ControllerBase
     {
-        private readonly IGebruikerRepository _repository;
+        private readonly IGebruikerRepository _gebruikerRepo;
+        private readonly IFilmRepository _filmRepo;
 
-        public GebruikerController(IGebruikerRepository repository)
+        public GebruikerController(IFilmRepository filmRepo, IGebruikerRepository gebruikerRepo)
         {
-            _repository = repository;
+            _filmRepo = filmRepo;
+            _gebruikerRepo = gebruikerRepo;
         }
 
-        [HttpGet()]
-        public ActionResult<GebruikerDTO> GetGebruiker()
+        // GET: api/Gebruiker
+        /// <summary>
+        /// Geef alle gebruikers terug geordend op naam
+        /// </summary>
+        /// <returns>array van gebruiker</returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IEnumerable<Gebruiker> GetGebruikers()
         {
-            Gebruiker g = _repository.GetBy(User.Identity.Name);
-            return new GebruikerDTO(g);
+                return _gebruikerRepo.GetAll();
+        }
+
+        // GET: api/Gebruiker
+        /// <summary>
+        /// Geef alle gebruikers terug geordend op naam
+        /// </summary>
+        /// <returns>array van gebruiker</returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IEnumerable<Gebruiker> GetGebruikersFilms()
+        {
+            return _gebruikerRepo.GetAllFilms();
+        }
+
+        // GET: api/Gebruiker
+        /// <summary>
+        /// Geef alle gebruikers terug geordend op naam
+        /// </summary>
+        /// <returns>array van gebruiker</returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IEnumerable<Gebruiker> GetGebruikersRating()
+        {
+            return _gebruikerRepo.GetAllRatings();
         }
     }
 }

@@ -7,9 +7,15 @@ namespace filmAPI.Models
 {
     public class WatchListItem
     {
-        public Film Film{ get; set; }
-        public Gebruiker Gebruiker { get; set; }
+        #region Properties
         public int GebruikerId { get; set; }
+
         public int FilmId { get; set; }
+
+        public Film Film { get; set; }
+
+        public Gebruiker Gebruiker { get; set; } 
+        #endregion
+
     }
 }

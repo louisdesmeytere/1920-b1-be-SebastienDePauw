@@ -11,7 +11,7 @@ namespace filmAPI.DTOs
         public DateTime Created { get; set; }
         public string Naam { get; set; }
         public string Email { get; set; }
-        public ICollection<Film> SeenList { get; set; }
+        public ICollection<Film> MijnWatchList { get; set; }
         public Dictionary<Film, double> MijnRatings { get; set; }
 
         public GebruikerDTO() { }
@@ -19,7 +19,7 @@ namespace filmAPI.DTOs
         public GebruikerDTO(Gebruiker gebruiker) : this() {
             Naam = gebruiker.Naam;
             Email = gebruiker.Email;
-            SeenList = gebruiker.SeenList;
+            MijnWatchList = gebruiker.GetMijnWatchList();
             MijnRatings = gebruiker.GetMijnRatings();
         }
     }

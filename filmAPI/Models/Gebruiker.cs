@@ -67,9 +67,16 @@ namespace filmAPI.Models
             return map;
         }
 
+        public List<Film> GetMijnWatchList()
+        {
+            List<Film> watchlist = new List<Film>();
+            WatchList.ForEach(e => watchlist.Add(e.Film));
+            return watchlist;
+        }
+
         public void AddFilmWatchlist(Film film)
         {
-            if (film != null) RemoveFilmWatchList(film);
+            RemoveFilmWatchList(film);
             WatchList.Add(new WatchListItem() { FilmId = film.Id, GebruikerId = Id, Film = film, Gebruiker = this});
         }
         public void AddRating(Film film, int score) {
@@ -85,7 +92,7 @@ namespace filmAPI.Models
         }
 
         public List<Film> GetFilmsWatchedOpTitel(string titel) => WatchList.Select(r => r.Film).Where(i => i.Titel.Contains(titel.ToLower().Trim())).ToList();
-        public List<Film> GetAllFilmsWatchList() => WatchList.Select(r => r.Film).ToList();
-        public List<Film> GetAllGeratedFilms() => Ratings.Select(r => r.Film).ToList();
+        public List<Film> GetAllFilmsWatchList() => WatchList.Where(e => e.GebruikerId == Id).Select(r => r.Film).ToList();
+        public List<Film> GetAllGeratedFilms() => Ratings.Where(e => e.GebruikerId == Id).Select(r => r.Film).ToList();
     }
 }

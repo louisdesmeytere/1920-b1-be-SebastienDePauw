@@ -22,11 +22,24 @@ namespace filmAPI.Data.Repositories
             _context.Add(gebruiker);
         }
 
-        public Gebruiker GetBy(string email)
+        public IEnumerable<Gebruiker> GetAll()
         {
-            return _gebruiker.Include(c => c.Ratings).ThenInclude(f => f.Film).ThenInclude(r => r.Acteurs).Include(r => r.WatchList).ThenInclude(r => r.).SingleOrDefault(c => c.Email == email);
+            return _gebruiker.OrderBy(e => e.Naam).ToList();
         }
 
+        public IEnumerable<Gebruiker> GetAllRatings() {
+            return _gebruiker.OrderBy(e => e.Naam).Include(c => c.Ratings).ThenInclude(f => f.Film).ThenInclude(e => e.Acteurs).ToList();
+        }
+
+        public IEnumerable<Gebruiker> GetAllFilms()
+        {
+            return _gebruiker.OrderBy(e => e.Naam).Include(c => c.WatchList).ThenInclude(f => f.Film).ThenInclude(e => e.Acteurs).ToList();
+        }
+
+        public Gebruiker GetBy(string email)
+        {
+            return _gebruiker.Include(c => c.Ratings).ThenInclude(f => f.Film).Include(c => c.WatchList).ThenInclude(f => f.Film).SingleOrDefault(c => c.Email == email);
+        }
 
 
         public void SaveChanges()
