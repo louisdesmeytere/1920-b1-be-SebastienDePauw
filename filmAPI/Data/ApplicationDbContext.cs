@@ -1,5 +1,5 @@
-﻿using filmAPI.Data.Mappers;
-using filmAPI.Models;
+﻿using filmAPI.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace filmAPI.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public DbSet<Film> Films { get; set; }
         public DbSet<Gebruiker> Gebruikers { get; set; }
@@ -25,8 +25,8 @@ namespace filmAPI.Data
                             .HasForeignKey("FilmId");
 
             modelBuilder.Entity<Film>()
-                .HasOne(p => p.Regisseur)
-                .WithMany()
+                .HasMany(p => p.Regisseurs)
+                .WithOne()
                 .IsRequired()
                 .HasForeignKey("FilmId");
 
@@ -38,11 +38,12 @@ namespace filmAPI.Data
 
             modelBuilder.Entity<Gebruiker>().Property(c => c.Naam).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<Gebruiker>().Property(c => c.Email).IsRequired().HasMaxLength(100);
-            modelBuilder.Entity<Gebruiker>().Ignore(c => c.RatedMovies);
 
-            modelBuilder.Entity<GebruikerRating>().HasKey(f => new { f.GebruikerId, f.FilmId });
-            modelBuilder.Entity<GebruikerRating>().HasOne(f => f.Gebruiker).WithMany(u => u.Ratings).HasForeignKey(f => f.GebruikerId);
-            modelBuilder.Entity<GebruikerRating>().HasOne(f => f.Film).WithMany().HasForeignKey(f => f.FilmId);
+            modelBuilder.Entity<Gebruiker>().HasMany(p => p.SeenList).WithOne().IsRequired(false).HasForeignKey("FilmId");
+
+            modelBuilder.Entity<Rating>().HasKey(f => new { f.GebruikerId, f.FilmId });
+            modelBuilder.Entity<Rating>().HasOne(f => f.Gebruiker).WithMany(u => u.Ratings).HasForeignKey(f => f.GebruikerId);
+            modelBuilder.Entity<Rating>().HasOne(f => f.Film).WithMany().HasForeignKey(f => f.FilmId);
 
         }
     }

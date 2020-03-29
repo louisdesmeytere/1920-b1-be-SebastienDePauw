@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace filmAPI.Models
 {
-    public class GebruikerRating
+    public class Rating
     {
         #region Properties
         public int GebruikerId { get; set; }
@@ -16,7 +16,7 @@ namespace filmAPI.Models
 
         public Film Film { get; set; }
 
-        public double Rating { get; set; }
+        public double Score { get; set; }
         #endregion
     }
 }

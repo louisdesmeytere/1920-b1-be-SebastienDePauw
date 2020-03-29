@@ -24,8 +24,10 @@ namespace filmAPI.Data.Repositories
 
         public Gebruiker GetBy(string email)
         {
-            return _gebruiker.Include(c => c.Ratings).ThenInclude(f => f.Film).ThenInclude(r => r.Acteurs).SingleOrDefault(c => c.Email == email);
+            return _gebruiker.Include(c => c.Ratings).ThenInclude(f => f.Film).ThenInclude(r => r.Acteurs).Include(r => r.WatchList).ThenInclude(r => r.).SingleOrDefault(c => c.Email == email);
         }
+
+
 
         public void SaveChanges()
         {

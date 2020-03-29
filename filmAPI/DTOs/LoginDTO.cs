@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace filmAPI.DTOs
 {
-    public class RegisseurDTO
+    public class LoginDTO
     {
         [Required]
-        public string Naam { get; set; }
-        public DateTime Geboortedatum { get; set; }
-        public DateTime? Sterfdatum { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
+        [Required]
+        public string Password { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace filmAPI.Models
 {
-    interface IGebruikerRepository
+    public interface IGebruikerRepository
     {
         Gebruiker GetBy(string email);
         void Add(Gebruiker gebruiker);

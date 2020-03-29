@@ -18,13 +18,14 @@ namespace filmAPI.Models
         public int Minuten { get; set; }
         public string Categorie {get;set;}
         public ICollection<Acteur> Acteurs { get; private set; }
-        public Regisseur Regisseur { get; set; }
+        public ICollection<Regisseur> Regisseurs { get; set; }
 
         public Film() {
             Acteurs = new List<Acteur>();
+            Regisseurs = new List<Regisseur>();
         }
 
-        public Film(string titel, string beschrijving, string storyline, int jaar, int minuten, string categorie)
+        public Film(string titel, string beschrijving, string storyline, int jaar, int minuten, string categorie) : this()
         {
             Titel = titel;
             Beschrijving = beschrijving;
@@ -40,9 +41,11 @@ namespace filmAPI.Models
 
         public Acteur GetActeurById(int id) => Acteurs.SingleOrDefault(i => i.Id == id);
 
-        public void SetRegisseur(Regisseur regisseur) {
-            Regisseur = regisseur;
-        }
+        public void AddRegisseur(Regisseur regisseur) => Regisseurs.Add(regisseur);
+
+        public void RemoveRegisseur(Regisseur regisseur) => Regisseurs.Remove(regisseur);
+
+        public Regisseur GetRegisseurById(int id) => Regisseurs.SingleOrDefault(i => i.Id == id);
 
     }
 }

@@ -23,7 +23,7 @@ namespace filmAPI.Data.Repositories
             _film.Add(film);
         }
 
-        public void Remove(Film film)
+        public void Delete(Film film)
         {
             _film.Remove(film);
         }
@@ -39,23 +39,23 @@ namespace filmAPI.Data.Repositories
 
         public IEnumerable<Film> GetAll()
         {
-            return _film.Include(r => r.Acteurs).Include(r => r.Regisseur).OrderBy(e => e.Titel).ToList();
+            return _film.OrderBy(e => e.Titel).Include(r => r.Acteurs).Include(r => r.Regisseurs).ToList();
         }
 
         public Film GetBy(int id)
         {
-            return _film.Include(r => r.Acteurs).Include(r => r.Regisseur).SingleOrDefault(e => e.Id == id) ;
+            return _film.Include(r => r.Acteurs).Include(r => r.Regisseurs).SingleOrDefault(e => e.Id == id);
         }
 
         public IEnumerable<Film> GetBy(string titel = null, string acteurNaam = null, string regisseurNaam = null)
         {
-            var films = _film.Include(r => r.Acteurs).Include(r => r.Regisseur).AsQueryable();
+            var films = _film.Include(r => r.Acteurs).Include(r => r.Regisseurs).AsQueryable();
             if (!string.IsNullOrEmpty(titel))
                 films = films.Where(r => r.Titel.IndexOf(titel) >= 0);
             if (!string.IsNullOrEmpty(acteurNaam))
                 films = films.Where(r => r.Acteurs.Any(i => i.Naam.Equals(acteurNaam)));
             if (!string.IsNullOrEmpty(regisseurNaam))
-                films = films.Where(r => r.Regisseur.Naam.Equals(regisseurNaam));
+                films = films.Where(r => r.Regisseurs.Any(i => i.Naam.Equals(acteurNaam)));
             return films.OrderBy(r => r.Titel).ToList();
         }
 
@@ -64,8 +64,6 @@ namespace filmAPI.Data.Repositories
             film = _context.Films.Include(r => r.Acteurs).FirstOrDefault(t => t.Id == id);
             return film != null;
         }
-
-
     }
 }
 
