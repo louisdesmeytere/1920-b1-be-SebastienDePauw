@@ -61,7 +61,7 @@ namespace filmAPI.Data.Repositories
 
         public bool TryGetFilm(int id, out Film film)
         {
-            film = _context.Films.Include(r => r.Acteurs).FirstOrDefault(t => t.Id == id);
+            film = _context.Films.Include(r => r.Acteurs).Include(r => r.Regisseurs).FirstOrDefault(t => t.Id == id);
             return film != null;
         }
     }

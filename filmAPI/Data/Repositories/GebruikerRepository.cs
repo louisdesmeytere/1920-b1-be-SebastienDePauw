@@ -27,20 +27,15 @@ namespace filmAPI.Data.Repositories
             return _gebruiker.OrderBy(e => e.Naam).ToList();
         }
 
-        public IEnumerable<Gebruiker> GetAllRatings() {
-            return _gebruiker.OrderBy(e => e.Naam).Include(c => c.Ratings).ThenInclude(f => f.Film).ThenInclude(e => e.Acteurs).ToList();
-        }
-
-        public IEnumerable<Gebruiker> GetAllFilms()
-        {
-            return _gebruiker.OrderBy(e => e.Naam).Include(c => c.WatchList).ThenInclude(f => f.Film).ThenInclude(e => e.Acteurs).ToList();
-        }
-
         public Gebruiker GetBy(string email)
         {
-            return _gebruiker.Include(c => c.Ratings).ThenInclude(f => f.Film).Include(c => c.WatchList).ThenInclude(f => f.Film).SingleOrDefault(c => c.Email == email);
+            return _gebruiker.Include(r => r.Ratings).ThenInclude(r => r.Film).Include(r => r.WatchList).ThenInclude(r => r.Film).SingleOrDefault(c => c.Email == email);
         }
 
+        public Gebruiker GetBy(int id)
+        {
+            return _gebruiker.Include(r => r.Ratings).ThenInclude(r => r.Film).Include(r => r.WatchList).ThenInclude(r => r.Film).SingleOrDefault(c => c.Id == id);
+        }
 
         public void SaveChanges()
         {

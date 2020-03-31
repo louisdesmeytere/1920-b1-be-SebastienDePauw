@@ -7,18 +7,13 @@ using System.Threading.Tasks;
 
 namespace filmAPI.DTOs
 {
-    public class GebruikerRatingDTO
+    public class RatingDTO
     {
         [Required]
-        public int Id { get; set; }
+        public Gebruiker Gebruiker { get; set; }
 
         [Required]
         public double Score { get; set; }
 
-        public GebruikerRatingDTO(Film film, double score)
-        {
-            Id = film.Id;
-            Score = score;
-        }
     }
 }

@@ -65,7 +65,7 @@ namespace filmAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Film> PostMovie(FilmDTO film)
+        public ActionResult<Film> PostFilm(FilmDTO film)
         {
             Film f = new Film() { Titel = film.Titel, Beschrijving = film.Beschrijving, Storyline = film.Storyline, Jaar = film.Jaar, Minuten = film.Minuten, Categorie = film.Categorie};
             foreach (var i in film.Acteurs) { f.AddActeur(new Acteur(i.Naam, i.Geboortedatum, i.Sterfdatum)); }
@@ -115,42 +115,5 @@ namespace filmAPI.Controllers
             _filmRepo.SaveChanges();
             return movie;
         }
-
-/*        //GET: api/Films/1/Acteurs
-        /// <summary>
-        /// Geef alle acteurs van een film
-        /// </summary>
-        /// /// <param name="id">Het id van de film</param>
-        [HttpGet("{id}/Acteurs")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<Acteur> GetAlleActeurs(int id)
-        {
-            if (!_filmRepo.TryGetFilm(id, out var film))
-            {
-                return NotFound();
-            }
-            Acteur acteur = film.GetActeurById(actId);
-            if (acteur == null) return NotFound();
-            return acteur;
-        }
-
-        //Add: api/Films/1/Acteurs
-        /// <summary>
-        /// Adds an actor to a movie
-        /// </summary>
-        /// <param name="id">the id of the movie</param>
-        /// <param name="actor">the actor to be added</param>
-        [HttpPost("{id}/actors")]
-        public ActionResult<Actor> PostActor(int id, ActorDTO actor)
-        {
-            if (!_movieRepository.TryGetMovie(id, out var movie))
-            {
-                return NotFound();
-            }
-            var actorToCreate = new Actor(actor.Name);
-            movie.AddActor(actorToCreate);
-            _movieRepository.SaveChanges();
-            return CreatedAtAction("GetActor", new { id = movie.Id, actorId = actorToCreate.Id }, actorToCreate);
-        }*/
     }
 }

@@ -10,10 +10,6 @@ namespace filmAPI.DTOs
     public class WatchListItemDTO
     {
         [Required]
-        int Id { get; set; }
-
-        public WatchListItemDTO(Film film) {
-            Id = film.Id;
-        }
+        Film Film { get; set; }
     }
 }
