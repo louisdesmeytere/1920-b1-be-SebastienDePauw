@@ -116,7 +116,7 @@ namespace filmAPI.Controllers
             return movie;
         }
 
-        //GET: api/Films/1/Acteurs
+/*        //GET: api/Films/1/Acteurs
         /// <summary>
         /// Geef alle acteurs van een film
         /// </summary>
@@ -134,64 +134,23 @@ namespace filmAPI.Controllers
             return acteur;
         }
 
-        //GET: api/Films/Acteurs/1
+        //Add: api/Films/1/Acteurs
         /// <summary>
-        /// Geef een acteur van een film op id
+        /// Adds an actor to a movie
         /// </summary>
-        /// <param name="id">Het id van de film</param>
-        /// <param name="acteurId">id van de acteur</param>
-        [HttpGet("{id}/acteurs/{acteurId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<Acteur> GetActeurById(int id, int acteurId)
+        /// <param name="id">the id of the movie</param>
+        /// <param name="actor">the actor to be added</param>
+        [HttpPost("{id}/actors")]
+        public ActionResult<Actor> PostActor(int id, ActorDTO actor)
         {
-            if (!_filmRepo.TryGetFilm(id, out var film))
+            if (!_movieRepository.TryGetMovie(id, out var movie))
             {
                 return NotFound();
             }
-            Acteur acteur = film.GetActeurById(actId);
-            if (acteur == null) return NotFound();
-            return acteur;
-        }
-
-        //POST: api/Films/Acteurs
-        /// <summary>
-        /// Voeg een acteur toe aan een film
-        /// </summary>
-        /// <param name="id">het id van de film</param>
-        /// <param name="acteur">the acteur die moeten worden toegevoegd</param>
-        [HttpPost("{id}/acteur")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<Acteur> PostActor(int id, ActeurDTO acteur)
-        {
-            if (!_filmRepo.TryGetFilm(id, out var film))
-            {
-                return NotFound();
-            }
-            var act = new Acteur(acteur.Naam, acteur.Geboortedatum, acteur.Sterfdatum);
-            film.AddActeur(act);
-            _filmRepo.SaveChanges();
-            return CreatedAtAction("GetActeur", new { id = film.Id, actorId = act.Id }, act);
-        }
-
-        // DELETE: api/Films/Acteur/1
-        /// <summary>
-        /// Een acteur deleten
-        /// </summary>
-        /// <param name="id">het id van de acteur die je wil deleten</param>
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Film> DeleteActeur(int id, Film film)
-        {
-            Film movie = _filmRepo.GetBy(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-            _filmRepo.Delete(movie);
-            _filmRepo.SaveChanges();
-            return movie;
-        }
+            var actorToCreate = new Actor(actor.Name);
+            movie.AddActor(actorToCreate);
+            _movieRepository.SaveChanges();
+            return CreatedAtAction("GetActor", new { id = movie.Id, actorId = actorToCreate.Id }, actorToCreate);
+        }*/
     }
 }

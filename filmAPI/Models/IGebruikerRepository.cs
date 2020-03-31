@@ -8,9 +8,8 @@ namespace filmAPI.Models
     public interface IGebruikerRepository
     {
         IEnumerable<Gebruiker> GetAll();
-        IEnumerable<Gebruiker> GetAllRatings();
-        IEnumerable<Gebruiker> GetAllFilms();
         Gebruiker GetBy(string email);
+        Gebruiker GetBy(int id);
         void Add(Gebruiker gebruiker);
         void SaveChanges();
     }

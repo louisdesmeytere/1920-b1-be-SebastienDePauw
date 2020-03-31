@@ -24,50 +24,76 @@ namespace filmAPI.Data
             _dbContext.Database.EnsureDeleted();
             if (_dbContext.Database.EnsureCreated())
             {
-                //await InitUser();
+                Film eg = new Film("End Game", "Beschrijving", "Korte inhoud", 2019, 181, "Actie/Sciencefiction");
+                Acteur evans = new Acteur("Chris Evans", new DateTime(1981, 6, 13));
+                Acteur junior = new Acteur("Robert Downey jr.", new DateTime(1965, 4, 4));
+                Acteur hemsworth = new Acteur("Chris Hemsworth", new DateTime(1983, 8, 11));
+                Acteur cooper = new Acteur("Bradley Cooper", new DateTime(1975, 1, 5));
+                Acteur ruffalo = new Acteur("Mark Ruffalo", new DateTime(1967, 11, 22));
+                Acteur johansson = new Acteur("Scarlett Johansson", new DateTime(1984, 11, 22));
+                Acteur renner = new Acteur("Jeremy Renner", new DateTime(1971, 1, 7));
+                Acteur rudd = new Acteur("Paul Rudd", new DateTime(1969, 4, 6));
+                Regisseur ar = new Regisseur("Anthony Russo", new DateTime(1970, 2, 3));
+                Regisseur jr = new Regisseur("Joe Russo", new DateTime(1971, 7, 19));
+                eg.AddActeur(evans);
+                eg.AddActeur(junior);
+                eg.AddActeur(hemsworth);
+                eg.AddActeur(cooper);
+                eg.AddActeur(ruffalo);
+                eg.AddActeur(johansson);
+                eg.AddActeur(renner);
+                eg.AddActeur(rudd);
+                eg.AddRegisseur(ar);
+                eg.AddRegisseur(jr);
+                _dbContext.Add(eg);
 
-                Acteur acteur1 = new Acteur("Tom", new DateTime(1990,12,1));
-                Acteur acteur2 = new Acteur("Bart", new DateTime(1980, 11, 1));
-                Acteur acteur3 = new Acteur("Jef",new DateTime(1970, 10, 1));
-                Acteur acteur4 = new Acteur("Julie", new DateTime(1960, 1, 1), new DateTime(2017, 12, 1));
-                Acteur acteur5 = new Acteur("Lore", new DateTime(1950, 5, 20), new DateTime(2019, 9, 17));
+                Film pf = new Film("Pulp Fiction", "Beschrijving", "Korte inhoud", 1994,154,"Misdaad");
+                Acteur jackson = new Acteur("Samuel L. Jackson", new DateTime(1948, 12, 21));
+                Acteur willis = new Acteur("Bruce Willis", new DateTime(1955, 3, 19));
+                Acteur travolta = new Acteur("John Travolta", new DateTime(1954, 2, 18));
+                Regisseur tarantino = new Regisseur("Quentin Tarantino", new DateTime(1963, 3, 27));
+                pf.AddActeur(jackson);
+                pf.AddActeur(willis);
+                pf.AddActeur(travolta);
+                pf.AddRegisseur(tarantino);
+                _dbContext.Add(pf);
 
-                Regisseur regisseur1 = new Regisseur("Geert", new DateTime(1950, 5, 20), new DateTime(2019, 9, 17));
-                Regisseur regisseur2 = new Regisseur("Lotte", new DateTime(1945, 4, 30));
-                Regisseur regisseur3 = new Regisseur("Bert", new DateTime(1950, 5, 20), new DateTime(2018, 9, 17));
-                Regisseur regisseur4 = new Regisseur("Jaak", new DateTime(1945, 4, 30));
-                Regisseur regisseur5 = new Regisseur("Peter", new DateTime(1950, 5, 20), new DateTime(2017, 9, 17));
+                Film joker = new Film("Joker", "Beschrijving", "Korte inhoud", 2019, 122, "Misdaad");
+                Acteur phoenix = new Acteur("Joaquin Phoenix", new DateTime(1974, 10, 28));
+                Acteur niro = new Acteur("Robert De Niro", new DateTime(1943, 8, 17));
+                Regisseur phillips = new Regisseur("Todd Phillips", new DateTime(1970, 12, 5));
+                joker.AddActeur(phoenix);
+                joker.AddActeur(niro);
+                joker.AddRegisseur(phillips);
+                _dbContext.Add(joker);
 
-                Film film1 = new Film("Star Wars", "beschrijving", "story", 2000, 135, "Sciencefiction");
-                film1.AddActeur(acteur1);
-                film1.AddActeur(acteur2);
-                film1.AddActeur(acteur3);
-                film1.AddRegisseur(regisseur1);
-                film1.AddRegisseur(regisseur2);
-                film1.AddRegisseur(regisseur3);
-                _dbContext.Add(film1);
+                Gebruiker jan = new Gebruiker("Jan Deprof","jan@msn.com");
+                _dbContext.Gebruikers.Add(jan);
+                await CreateUser(jan.Email, "P@ssword1");
 
-                Film film2 = new Film("Pulp Fiction", "beschrijving", "story",1990,120,"Actie");
-                film2.AddActeur(acteur3);
-                film2.AddActeur(acteur4);
-                film2.AddActeur(acteur5);
-                film2.AddRegisseur(regisseur3);
-                film2.AddRegisseur(regisseur4);
-                film2.AddRegisseur(regisseur5);
-                _dbContext.Add(film2);
+                Gebruiker seba = new Gebruiker("Sebastien De Pauw", "Sebastien@hotmail.be");
+                seba.AddRating(eg, 7);
+                seba.AddRating(joker, 9.2);
+                seba.AddRating(pf, 9.6);
+                _dbContext.Gebruikers.Add(seba);
+                await CreateUser(seba.Email, "P@ssword1");
 
-                Gebruiker gebruiker1 = new Gebruiker("Piet","piet@hotmail.com");
-                gebruiker1.AddRating(film1, 9);
-                gebruiker1.AddRating(film2, 10);
-                gebruiker1.AddFilmWatchlist(film1);
-                gebruiker1.AddFilmWatchlist(film2);
-                _dbContext.Gebruikers.Add(gebruiker1);
-                await CreateUser(gebruiker1.Email, "P@ssword1");
-                Gebruiker gebruiker2 = new Gebruiker("Sebastien", "Sebastien@hotmail.com");
-                gebruiker2.AddRating(film1, 6);
-                gebruiker2.AddFilmWatchlist(film2);
-                _dbContext.Gebruikers.Add(gebruiker2);
-                await CreateUser(gebruiker2.Email, "P@ssword1");
+                Gebruiker piet = new Gebruiker("Piet Decoster", "piet@gmail.com");
+                piet.AddRating(eg, 9);
+                piet.AddRating(joker, 8);
+                piet.AddRating(pf, 8.3);
+                piet.AddFilmWatchlist(eg);
+                piet.AddFilmWatchlist(joker);
+                piet.AddFilmWatchlist(pf);
+                _dbContext.Gebruikers.Add(piet);
+                await CreateUser(piet.Email, "P@ssword1");
+
+                Gebruiker tom = new Gebruiker("Tom Verbruggen", "tom@telenet.be");
+                tom.AddFilmWatchlist(eg);
+                tom.AddFilmWatchlist(joker);
+                tom.AddFilmWatchlist(pf);
+                _dbContext.Gebruikers.Add(tom);
+                await CreateUser(tom.Email, "P@ssword1");
 
                 _dbContext.SaveChanges();
             }

@@ -8,6 +8,7 @@ namespace filmAPI.Models
     public class WatchListItem
     {
         #region Properties
+        public int id { get; set; }
         public int GebruikerId { get; set; }
 
         public int FilmId { get; set; }

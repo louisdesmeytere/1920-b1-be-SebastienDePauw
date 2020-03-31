@@ -74,25 +74,18 @@ namespace filmAPI.Models
             return watchlist;
         }
 
-        public void AddFilmWatchlist(Film film)
-        {
-            RemoveFilmWatchList(film);
-            WatchList.Add(new WatchListItem() { FilmId = film.Id, GebruikerId = Id, Film = film, Gebruiker = this});
-        }
-        public void AddRating(Film film, int score) {
-            RemoveRating(film);
-            Ratings.Add(new Rating() { FilmId = film.Id, GebruikerId = Id, Film = film, Gebruiker = this, Score = score });
-        }
+        public void AddFilmWatchlist(Film film) => WatchList.Add(new WatchListItem() { FilmId = film.Id, GebruikerId = Id, Film = film, Gebruiker = this});
+        public void AddRating(Film film, double score) =>  Ratings.Add(new Rating() { FilmId = film.Id, GebruikerId = Id, Film = film, Gebruiker = this, Score = score });
 
-        public void RemoveFilmWatchList(Film film) { 
-            WatchList.Where(e => e.GebruikerId == Id && e.FilmId == film.Id).ToList().ForEach(e => WatchList.Remove(e));
-        }
-        public void RemoveRating(Film film) { 
-            Ratings.Where(e => e.GebruikerId == Id && e.FilmId == film.Id).ToList().ForEach(e => Ratings.Remove(e)); 
-        }
+        public void RemoveFilmWatchList(Film film) => WatchList.Where(e => e.GebruikerId == Id && e.FilmId == film.Id).ToList().ForEach(e => WatchList.Remove(e));
+        public void RemoveRating(Film film) => Ratings.Where(e => e.GebruikerId == Id && e.FilmId == film.Id).ToList().ForEach(e => Ratings.Remove(e)); 
 
-        public List<Film> GetFilmsWatchedOpTitel(string titel) => WatchList.Select(r => r.Film).Where(i => i.Titel.Contains(titel.ToLower().Trim())).ToList();
+        public Film GetFilmsWatchedOpId(int id) => WatchList.Select(r => r.Film).Where(i => i.Id == id).FirstOrDefault();
+        public Film GetFilmRatedOpId(int id) => Ratings.Select(r => r.Film).Where(i => i.Id == id).FirstOrDefault();
+
         public List<Film> GetAllFilmsWatchList() => WatchList.Where(e => e.GebruikerId == Id).Select(r => r.Film).ToList();
         public List<Film> GetAllGeratedFilms() => Ratings.Where(e => e.GebruikerId == Id).Select(r => r.Film).ToList();
+
+
     }
 }
