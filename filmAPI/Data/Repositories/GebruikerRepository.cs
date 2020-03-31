@@ -41,5 +41,50 @@ namespace filmAPI.Data.Repositories
         {
             _context.SaveChanges();
         }
+
+        public void Update(Gebruiker gebruiker)
+        {
+            _context.Update(gebruiker);
+        }
+
+        public IEnumerable<Film> GetAllFilmsWatchlist(Gebruiker gebruiker) {
+           Gebruiker g = _gebruiker.Where(e => e.Id == gebruiker.Id).FirstOrDefault();
+           return g.GetAllFilmsWatchList();
+        }
+
+        public Film GetFilmsWatchlist(Gebruiker gebruiker, int id)
+        {
+            Gebruiker g = _gebruiker.Where(e => e.Id == gebruiker.Id).FirstOrDefault();
+            return g.GetFilmRatedOpId(id);
+        }
+
+        public void AddFilmsWatchlist(Gebruiker gebruiker, Film film) {
+            Gebruiker g = _gebruiker.Where(e => e.Id == gebruiker.Id).FirstOrDefault();
+            g.AddFilmWatchlist(film);
+        }
+
+        public void RemoveFilmsWatchlist(Gebruiker gebruiker, Film film)
+        {
+            Gebruiker g = _gebruiker.Where(e => e.Id == gebruiker.Id).FirstOrDefault();
+            g.RemoveFilmWatchList(film);
+        }
+
+        public IEnumerable<Film> GetAllFilmsRating(Gebruiker gebruiker)
+        {
+            Gebruiker g = _gebruiker.Where(e => e.Id == gebruiker.Id).FirstOrDefault();
+            return g.GetAllGeratedFilms();
+        }
+
+        public Film GetFilmsRating(Gebruiker gebruiker, int id)
+        {
+            Gebruiker g = _gebruiker.Where(e => e.Id == gebruiker.Id).FirstOrDefault();
+            return g.GetFilmRatedOpId(id);
+        }
+
+        public void RemoveFilmsRating(Gebruiker gebruiker, Film film)
+        {
+            Gebruiker g = _gebruiker.Where(e => e.Id == gebruiker.Id).FirstOrDefault();
+            g.RemoveRating(film);
+        }
     }
 }

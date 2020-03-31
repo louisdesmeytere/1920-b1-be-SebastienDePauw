@@ -18,13 +18,13 @@ namespace filmAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountsController : ControllerBase
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IGebruikerRepository _gebruikerRepository;
         private readonly IConfiguration _config;
-        public AccountController(
+        public AccountsController(
         SignInManager<IdentityUser> signInManager,
         UserManager<IdentityUser> userManager,
         IGebruikerRepository gebruikerRepository,
@@ -58,7 +58,7 @@ namespace filmAPI.Controllers
         }
 
         /// <summary>
-        /// register
+        /// Registreer
         /// </summary>
         /// <param name="model">de datails van de registratie </param>
         [AllowAnonymous]

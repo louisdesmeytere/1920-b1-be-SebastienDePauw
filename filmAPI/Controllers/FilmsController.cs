@@ -20,13 +20,16 @@ namespace filmAPI.Controllers
     {
         private readonly IFilmRepository _filmRepo;
         private readonly IGebruikerRepository _gebruikerRepo;
+        private readonly Gebruiker _huidigeGebruiker;
 
         public FilmsController(IFilmRepository context, IGebruikerRepository gebruikerRepo)
         {
             _filmRepo = context;
             _gebruikerRepo = gebruikerRepo;
+            _huidigeGebruiker = _gebruikerRepo.GetBy(User.Identity.Name);
         }
 
+        #region All
         // GET: api/Films
         /// <summary>
         /// Geef alle films terug geordend op titel
@@ -67,7 +70,7 @@ namespace filmAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Film> PostFilm(FilmDTO film)
         {
-            Film f = new Film() { Titel = film.Titel, Beschrijving = film.Beschrijving, Storyline = film.Storyline, Jaar = film.Jaar, Minuten = film.Minuten, Categorie = film.Categorie};
+            Film f = new Film() { Titel = film.Titel, Beschrijving = film.Beschrijving, Storyline = film.Storyline, Jaar = film.Jaar, Minuten = film.Minuten, Categorie = film.Categorie };
             foreach (var i in film.Acteurs) { f.AddActeur(new Acteur(i.Naam, i.Geboortedatum, i.Sterfdatum)); }
             foreach (var i in film.Regisseurs) { f.AddRegisseur(new Regisseur(i.Naam, i.Geboortedatum, i.Sterfdatum)); }
 
@@ -115,5 +118,58 @@ namespace filmAPI.Controllers
             _filmRepo.SaveChanges();
             return movie;
         }
+        #endregion
+
+        #region Watchlist
+        // GET: api/Films/Watchlist
+        /// <summary>
+        /// Geef alle films terug in watchlist geordend op titel
+        /// </summary>
+        /// <returns>array van films</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IEnumerable<Film> GetAllFilmsWatchlist()
+        {
+            return _gebruikerRepo.GetAllFilmsWatchlist(_huidigeGebruiker);
+        }
+
+        // GET: api/Films/Watchlist/1
+        /// <summary>
+        /// Geef alle films terug in watchlist geordend op titel
+        /// </summary>
+        /// <returns>array van films</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public Film GetFilmsWatchlistById(int filmId)
+        {
+            return _gebruikerRepo.GetFilmsWatchlist(_huidigeGebruiker, filmId);
+        }
+
+        // PUT: api/Films/Watchlist
+        /// <summary>
+        /// Geef alle films terug in watchlist geordend op titel
+        /// </summary>
+        /// <returns>array van films</returns>
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IEnumerable<Film> PutFilmWatchlist()
+        {
+            _gebruikerRepo.
+        }
+
+        // DELETE: api/Films/Watchlist/1
+        /// <summary>
+        /// Geef alle films terug in watchlist geordend op titel
+        /// </summary>
+        /// <returns>array van films</returns>
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IEnumerable<Film> DeleteFilmWatchlist(string titel = null, string acteurNaam = null, string regisseurNaam = null)
+        {
+            if (string.IsNullOrWhiteSpace(titel) && string.IsNullOrWhiteSpace(acteurNaam) && string.IsNullOrWhiteSpace(regisseurNaam))
+                return _filmRepo.GetAll();
+            return _filmRepo.GetBy(titel, acteurNaam, regisseurNaam);
+        }
+        #endregion
     }
 }
