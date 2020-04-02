@@ -19,9 +19,9 @@ namespace filmAPI.Models
         public string Categorie {get;set;}
         public double? Rating { get; set; }
         [Required]
-        public ICollection<Acteur> Acteurs { get; private set; }
+        public List<Acteur> Acteurs { get; private set; }
         [Required]
-        public ICollection<Regisseur> Regisseurs { get; set; }
+        public List<Regisseur> Regisseurs { get;private set; }
 
 
         public Film() {
@@ -55,5 +55,18 @@ namespace filmAPI.Models
         public Regisseur GetRegisseurById(int id) => Regisseurs.SingleOrDefault(i => i.Id == id);
         
         public void AddRating(double rating) =>  Rating = rating;
+
+        internal void Update(Film film)
+        {
+            Titel = film.Titel;
+            Beschrijving = film.Beschrijving;
+            Storyline = film.Storyline;
+            Jaar = film.Jaar;
+            Minuten = film.Minuten;
+            Categorie = film.Categorie;
+            Rating = film.Rating;
+            film.Acteurs.ForEach(e => UpdateActeur(e));
+            film.Regisseurs.ForEach(e => UpdateRegisseur(e));
+        }
     }
 }

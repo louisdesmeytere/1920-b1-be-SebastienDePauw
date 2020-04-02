@@ -83,6 +83,11 @@ namespace filmAPI.Models
         {
             return WatchList.FirstOrDefault(e => e.Id == id);
         }
+
+        public void SetWatchlistFilm(int id, Film film) {
+            Film f = WatchList.FirstOrDefault(e => e.Id == id);
+            f.Update(film);
+        }
         #endregion
 
 

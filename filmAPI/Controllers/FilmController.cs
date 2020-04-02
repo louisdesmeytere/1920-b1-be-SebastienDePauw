@@ -24,13 +24,13 @@ namespace filmAPI.Controllers
         public FilmController(IGebruikerRepository gebruikerRepo)
         {
             _gebruikerRepo = gebruikerRepo;
+            Console.WriteLine(User.Identity.Name);
             _huidigeGebruiker = _gebruikerRepo.GetBy(User.Identity.Name);
         }
 
-        #region Films
         // POST: api/Films/VoegToe
         /// <summary>
-        /// Voegt een film toe
+        /// Voegt een film toe aan uw watchlist
         /// </summary>
         /// <param name="film">de nieuwe film</param>
         [HttpPost]
@@ -51,12 +51,27 @@ namespace filmAPI.Controllers
 
         // GET: api/Films/1/Detail
         /// <summary>
-        /// Geef de deatails van een film terug
+        /// Geeft de details van een film in uw watchlist terug
         /// </summary>
         /// /// <param name="id">de id van de film waarvan de details getoond moeten worden</param>
         /// <returns>een film</returns>
         [HttpGet("{id}")]
         [Route("{id}/Detail")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public Film GetFilmsWatchlist(int id)
+        {
+            Film f = _huidigeGebruiker.GetFilmWatchlistBy(id);
+            if (f == null)
+                NotFound();
+            return f;
+        }
+
+        // GET: api/Films
+        /// <summary>
+        /// Geef alle films in watchlist terug geordend op titel
+        /// </summary>
+        /// <returns>array van films</returns>
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IEnumerable<Film> GetFilmsWatchlist(string titel = null, string acteurNaam = null, string regisseurNaam = null)
         {
@@ -65,64 +80,48 @@ namespace filmAPI.Controllers
             return _huidigeGebruiker.GetFilmWatchlistBy(titel, acteurNaam, regisseurNaam);
         }
 
-        /*        // PUT: api/Films/1/Detail
-                /// <summary>
-                /// Een film aanpassen
-                /// </summary>
-                /// <param name="id">id van de film die moet aangepast worden</param>
-                /// <param name="film">de herziene film</param>
-                [HttpPut("{id}")]
-                [Route("{id}/Detail")]
-                [ProducesResponseType(StatusCodes.Status204NoContent)]
-                [ProducesResponseType(StatusCodes.Status400BadRequest)]
-                [ProducesResponseType(StatusCodes.Status404NotFound)]
-                public IActionResult PutFilm(int id, Film film)
-                {
-                    if (film.Id != id) return BadRequest();
-                    _filmRepo.Update(film);
-                    _filmRepo.SaveChanges();
-                    return NoContent();
-                }
+/*        // PUT: api/Films/1/Detail
+        /// <summary>
+        /// Een film aanpassen
+        /// </summary>
+        /// <param name="id">id van de film die moet aangepast worden</param>
+        /// <param name="film">de herziene film</param>
+        [HttpPut("{id}")]
+        [Route("{id}/Detail")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult PutFilm(int id, Film film)
+        {
+            if (film.Id != id) return BadRequest();
+            _huidigeGebruiker.SetWatchlistFilm(id, film);
+            _gebruikerRepo.Update(_huidigeGebruiker);
+            _gebruikerRepo.SaveChanges();
+            return NoContent();
+        }*/
 
 
-                #endregion
-                // DELETE: api/Films/1/Detail
-                /// <summary>
-                /// Een film deleten
-                /// </summary>
-                /// <param name="id">het id van de film die je wil deleten</param>
-                [HttpDelete("{id}")]
-                [Route("api/[controller]/Detail")]
-                [ProducesResponseType(StatusCodes.Status200OK)]
-                [ProducesResponseType(StatusCodes.Status400BadRequest)]
-                [ProducesResponseType(StatusCodes.Status404NotFound)]
-                public ActionResult<Film> DeleteMovie(int id)
-                {
-                    Film movie = _huidigeGebruiker.GetFilmWatchlistBy(id);
-                    if (movie == null)
-                    {
-                        return NotFound();
-                    }
-                    _filmRepo.Delete(movie);
-                    _filmRepo.SaveChanges();
-                    return movie;
-                }
-
-
-                #region Watchlist
-                // GET: api/Films
-                /// <summary>
-                /// Geef alle films in watchlist terug geordend op titel
-                /// </summary>
-                /// <returns>array van films</returns>
-                [HttpGet]
-                [ProducesResponseType(StatusCodes.Status200OK)]
-                public IEnumerable<Film> GetFilmsWatchlist(string titel = null, string acteurNaam = null, string regisseurNaam = null)
-                {
-                    if (string.IsNullOrWhiteSpace(titel) && string.IsNullOrWhiteSpace(acteurNaam) && string.IsNullOrWhiteSpace(regisseurNaam))
-                        return _huidigeGebruiker.WatchList;
-                    return _huidigeGebruiker.GetFilmWatchlistBy(titel, acteurNaam, regisseurNaam);
-                }*/
+        /*  #endregion
+          // DELETE: api/Films/1/Detail
+          /// <summary>
+          /// Een film deleten
+          /// </summary>
+          /// <param name="id">het id van de film die je wil deleten</param>
+          [HttpDelete("{id}")]
+          [Route("api/[controller]/Detail")]
+          [ProducesResponseType(StatusCodes.Status200OK)]
+          [ProducesResponseType(StatusCodes.Status400BadRequest)]
+          [ProducesResponseType(StatusCodes.Status404NotFound)]
+          public ActionResult<Film> DeleteMovie(int id)
+          {
+              Film movie = _huidigeGebruiker.GetFilmWatchlistBy(id);
+              if (movie == null)
+              {
+                  return NotFound();
+              }
+              _filmRepo.Delete(movie);
+              _filmRepo.SaveChanges();
+              return movie;
+          }*/
 
         /* // GET: api/Films/1
          /// <summary>
@@ -169,5 +168,4 @@ namespace filmAPI.Controllers
          #endregion
          */
     }
-    #endregion
 }
