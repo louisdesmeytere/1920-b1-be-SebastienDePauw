@@ -24,11 +24,7 @@ namespace filmAPI.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IGebruikerRepository _gebruikerRepository;
         private readonly IConfiguration _config;
-        public AccountsController(
-        SignInManager<IdentityUser> signInManager,
-        UserManager<IdentityUser> userManager,
-        IGebruikerRepository gebruikerRepository,
-        IConfiguration config)
+        public AccountsController( SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IGebruikerRepository gebruikerRepository, IConfiguration config)
         {
             _signInManager = signInManager;
             _userManager = userManager;

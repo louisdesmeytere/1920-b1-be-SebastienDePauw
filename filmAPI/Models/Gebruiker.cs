@@ -45,12 +45,10 @@ namespace filmAPI.Models
                 }
             }
         }
-        public List<WatchListItem> WatchList { get;set; }
-        public ICollection<Rating> Ratings { get; set; }
+        public List<Film> WatchList { get;set; }
 
         public Gebruiker() {
-            WatchList = new List<WatchListItem>();
-            Ratings = new List<Rating>();
+            WatchList = new List<Film>();
             Created = DateTime.Now;
         }
 
@@ -60,31 +58,32 @@ namespace filmAPI.Models
             Email = email;
         }
 
-        public Dictionary<Film, double> GetMijnRatings() {
-            var map = new Dictionary<Film, double>();
-            List<Rating> ratings = new List<Rating>(Ratings);
-            ratings.ForEach(e => map.Add(e.Film, e.Score));
-            return map;
-        }
+        #region Methods
+        public void AddFilmWatchlist(Film film) => WatchList.Add(film);
 
-        public List<Film> GetMijnWatchList()
+        public void RemoveFilmWatchList(Film film)
         {
-            List<Film> watchlist = new List<Film>();
-            WatchList.ForEach(e => watchlist.Add(e.Film));
-            return watchlist;
+            Film f = WatchList.Where(e => e.Id == film.Id).FirstOrDefault();
+            if (f != null) WatchList.Remove(f);
         }
 
-        public void AddFilmWatchlist(Film film) => WatchList.Add(new WatchListItem() { FilmId = film.Id, GebruikerId = Id, Film = film, Gebruiker = this});
-        public void AddRating(Film film, double score) =>  Ratings.Add(new Rating() { FilmId = film.Id, GebruikerId = Id, Film = film, Gebruiker = this, Score = score });
+        public IEnumerable<Film> GetFilmWatchlistBy(string titel = null, string acteurNaam = null, string regisseurNaam = null)
+        {
+            var movies = WatchList.AsQueryable();
+            if (!string.IsNullOrEmpty(titel))
+                movies = movies.Where(r => r.Titel.IndexOf(titel, System.StringComparison.OrdinalIgnoreCase) >= 0);
+            if (!string.IsNullOrEmpty(acteurNaam))
+                movies = movies.Where(r => r.Acteurs.Any(i => i.Naam.Equals(acteurNaam, System.StringComparison.OrdinalIgnoreCase)));
+            if (!string.IsNullOrEmpty(regisseurNaam))
+                movies = movies.Where(r => r.Regisseurs.Any(i => i.Naam.Equals(regisseurNaam, System.StringComparison.OrdinalIgnoreCase)));
+            return movies.OrderBy(r => r.Titel).ToList();
+        }
 
-        public void RemoveFilmWatchList(Film film) => WatchList.Where(e => e.GebruikerId == Id && e.FilmId == film.Id).ToList().ForEach(e => WatchList.Remove(e));
-        public void RemoveRating(Film film) => Ratings.Where(e => e.GebruikerId == Id && e.FilmId == film.Id).ToList().ForEach(e => Ratings.Remove(e)); 
-
-        public Film GetFilmsWatchedOpId(int id) => WatchList.Select(r => r.Film).Where(i => i.Id == id).FirstOrDefault();
-        public Film GetFilmRatedOpId(int id) => Ratings.Select(r => r.Film).Where(i => i.Id == id).FirstOrDefault();
-
-        public List<Film> GetAllFilmsWatchList() => WatchList.Where(e => e.GebruikerId == Id).Select(r => r.Film).ToList();
-        public List<Film> GetAllGeratedFilms() => Ratings.Where(e => e.GebruikerId == Id).Select(r => r.Film).ToList();
+        public Film GetFilmWatchlistBy(int id)
+        {
+            return WatchList.FirstOrDefault(e => e.Id == id);
+        }
+        #endregion
 
 
     }

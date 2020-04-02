@@ -10,7 +10,6 @@ namespace filmAPI.DTOs
     {
         public string Naam { get; set; }
         public string Email { get; set; }
-        public IList<WatchListItemDTO> MijnWatchList { get; set; }
-        public IList<RatingDTO> MijnRatings { get; set; }
+        public IList<FilmDTO> Watchlist { get; set; }
     }
 }

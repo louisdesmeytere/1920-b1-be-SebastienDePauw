@@ -15,6 +15,7 @@ namespace filmAPI.DTOs
         public int Jaar { get; set; }
         public int Minuten { get; set; }
         public string Categorie { get; set; }
+        public double Rating { get; set; }
         public IList<RegisseurDTO> Regisseurs { get; set; }
         public IList<ActeurDTO> Acteurs { get; set; }
     }
