@@ -11,6 +11,7 @@ namespace filmAPI.Data
     public class ApplicationDbContext : IdentityDbContext
     {
         public DbSet<Gebruiker> Gebruikers { get; set; }
+        public DbSet<Film> Films { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 

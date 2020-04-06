@@ -25,7 +25,8 @@ namespace filmAPI.Data.Repositories
 
         public Gebruiker GetBy(string email)
         {
-            return _gebruiker.SingleOrDefault(c => c.Email == email);
+            Gebruiker g = _gebruiker.Include(e => e.WatchList).ThenInclude(e => e.Acteurs).Include(e => e.WatchList).ThenInclude(e => e.Regisseurs).SingleOrDefault(c => c.Email == email);
+            return g;
         }
 
         public void SaveChanges()

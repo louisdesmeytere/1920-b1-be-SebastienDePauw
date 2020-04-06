@@ -79,14 +79,22 @@ namespace filmAPI.Models
             return movies.OrderBy(r => r.Titel).ToList();
         }
 
+        public IEnumerable<Film> GetAllFilms()
+        {
+            return WatchList;
+        }
+
         public Film GetFilmWatchlistBy(int id)
         {
             return WatchList.FirstOrDefault(e => e.Id == id);
         }
 
         public void SetWatchlistFilm(int id, Film film) {
-            Film f = WatchList.FirstOrDefault(e => e.Id == id);
-            f.Update(film);
+            int i = WatchList.IndexOf(WatchList.FirstOrDefault(e => e.Id == id));
+            WatchList.RemoveAt(i);
+            WatchList.Insert(i, film);
+            //Film f = WatchList.FirstOrDefault(e => e.Id == id);
+            //f.Update(film);
         }
         #endregion
 

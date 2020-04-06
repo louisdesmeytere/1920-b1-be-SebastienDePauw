@@ -14,53 +14,32 @@ namespace filmAPI.Controllers
     [ApiConventionType(typeof(DefaultApiConventions))]
     [Produces("application/json")]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class FilmController : ControllerBase
     {
         private readonly IGebruikerRepository _gebruikerRepo;
-        private readonly Gebruiker _huidigeGebruiker;
+        private readonly IFilmRepository _filmRepo;
 
-        public FilmController(IGebruikerRepository gebruikerRepo)
+        public FilmController(IGebruikerRepository gebruikerRepo, IFilmRepository filmRepository)
         {
             _gebruikerRepo = gebruikerRepo;
-            Console.WriteLine(User.Identity.Name);
-            _huidigeGebruiker = _gebruikerRepo.GetBy(User.Identity.Name);
+            _filmRepo = filmRepository;
         }
 
-        // POST: api/Films/VoegToe
-        /// <summary>
-        /// Voegt een film toe aan uw watchlist
-        /// </summary>
-        /// <param name="film">de nieuwe film</param>
-        [HttpPost]
-        [Route("/VoegToe")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Film> PostFilm(FilmDTO film)
-        {
-            Film f = new Film() { Titel = film.Titel, Beschrijving = film.Beschrijving, Storyline = film.Storyline, Jaar = film.Jaar, Minuten = film.Minuten, Categorie = film.Categorie };
-            foreach (var i in film.Acteurs) { f.AddActeur(new Acteur(i.Naam, i.Geboortedatum, i.Sterfdatum)); }
-            foreach (var i in film.Regisseurs) { f.AddRegisseur(new Regisseur(i.Naam, i.Geboortedatum, i.Sterfdatum)); }
-
-            _huidigeGebruiker.AddFilmWatchlist(f);
-            _gebruikerRepo.SaveChanges();
-
-            return CreatedAtAction("GetFilm", new { id = f.Id }, f);
-        }
-
-        // GET: api/Films/1/Detail
+        // GET: api/Films/1
         /// <summary>
         /// Geeft de details van een film in uw watchlist terug
         /// </summary>
         /// /// <param name="id">de id van de film waarvan de details getoond moeten worden</param>
         /// <returns>een film</returns>
         [HttpGet("{id}")]
-        [Route("{id}/Detail")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public Film GetFilmsWatchlist(int id)
         {
-            Film f = _huidigeGebruiker.GetFilmWatchlistBy(id);
+            Gebruiker g = _gebruikerRepo.GetBy(User.Identity.Name);
+
+            Film f = g.GetFilmWatchlistBy(id);
             if (f == null)
                 NotFound();
             return f;
@@ -75,53 +54,78 @@ namespace filmAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IEnumerable<Film> GetFilmsWatchlist(string titel = null, string acteurNaam = null, string regisseurNaam = null)
         {
+            Gebruiker g = _gebruikerRepo.GetBy(User.Identity.Name);
             if (string.IsNullOrWhiteSpace(titel) && string.IsNullOrWhiteSpace(acteurNaam) && string.IsNullOrWhiteSpace(regisseurNaam))
-                return _huidigeGebruiker.WatchList;
-            return _huidigeGebruiker.GetFilmWatchlistBy(titel, acteurNaam, regisseurNaam);
+                return g.GetAllFilms();
+            return g.GetFilmWatchlistBy(titel, acteurNaam, regisseurNaam);
         }
 
-/*        // PUT: api/Films/1/Detail
+        // PUT: api/Films/1
         /// <summary>
         /// Een film aanpassen
         /// </summary>
         /// <param name="id">id van de film die moet aangepast worden</param>
         /// <param name="film">de herziene film</param>
         [HttpPut("{id}")]
-        [Route("{id}/Detail")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult PutFilm(int id, Film film)
         {
-            if (film.Id != id) return BadRequest();
-            _huidigeGebruiker.SetWatchlistFilm(id, film);
-            _gebruikerRepo.Update(_huidigeGebruiker);
-            _gebruikerRepo.SaveChanges();
+            if (id != film.Id) return BadRequest();
+            _filmRepo.Update(film);
+            _filmRepo.SaveChanges();
             return NoContent();
-        }*/
+        }
 
+        // POST: api/Films
+        /// <summary>
+        /// Voegt een film toe aan uw watchlist
+        /// </summary>
+        /// <param name="film">de nieuwe film</param>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Film> PostFilm(FilmDTO film)
+        {
+            Gebruiker g = _gebruikerRepo.GetBy(User.Identity.Name);
+            Film filmToCreate = new Film() { Titel = film.Titel, Beschrijving = film.Beschrijving, Storyline = film.Storyline, Jaar = film.Jaar, Minuten = film.Minuten, Categorie = film.Categorie };
+            foreach (var i in film.Acteurs)
+            {
+                if (i.Sterfdatum == null) { filmToCreate.AddActeur(new Acteur(i.Naam, i.Geboortedatum)); }
+                else { filmToCreate.AddActeur(new Acteur(i.Naam, i.Geboortedatum, i.Sterfdatum.Value)); }
+            }
+            foreach (var i in film.Regisseurs)
+            {
+                if (i.Sterfdatum == null) { filmToCreate.AddRegisseur(new Regisseur(i.Naam, i.Geboortedatum)); }
+                else { filmToCreate.AddRegisseur(new Regisseur(i.Naam, i.Geboortedatum, i.Sterfdatum.Value)); }
+            }
+            g.AddFilmWatchlist(filmToCreate);
+            _filmRepo.SaveChanges();
+            _gebruikerRepo.SaveChanges();
 
-        /*  #endregion
-          // DELETE: api/Films/1/Detail
+            return CreatedAtAction(nameof(GetFilmsWatchlist), new { id = filmToCreate.Id }, filmToCreate);
+        }
+
+          // DELETE: api/Films/
           /// <summary>
           /// Een film deleten
           /// </summary>
           /// <param name="id">het id van de film die je wil deleten</param>
           [HttpDelete("{id}")]
-          [Route("api/[controller]/Detail")]
           [ProducesResponseType(StatusCodes.Status200OK)]
           [ProducesResponseType(StatusCodes.Status400BadRequest)]
           [ProducesResponseType(StatusCodes.Status404NotFound)]
           public ActionResult<Film> DeleteMovie(int id)
           {
-              Film movie = _huidigeGebruiker.GetFilmWatchlistBy(id);
-              if (movie == null)
+              Film film = _filmRepo.GetBy(id);
+              if (film == null)
               {
                   return NotFound();
               }
-              _filmRepo.Delete(movie);
+              _filmRepo.Delete(film);
               _filmRepo.SaveChanges();
-              return movie;
-          }*/
+              return film;
+          }
 
         /* // GET: api/Films/1
          /// <summary>

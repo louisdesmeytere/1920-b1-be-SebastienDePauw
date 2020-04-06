@@ -71,6 +71,7 @@ namespace filmAPI
 
             services.AddScoped<DataInitializer>();
             services.AddScoped<IGebruikerRepository, GebruikerRepository>();
+            services.AddScoped<IFilmRepository, FilmRepository>();
 
             services.AddCors(options => options.AddPolicy("AllowAllOrigins", builder => builder.AllowAnyOrigin()));
             //services.AddCors(options => options.AddPolicy("AllowAllOrigins", builder => builder.AllowAnyOrigin()));

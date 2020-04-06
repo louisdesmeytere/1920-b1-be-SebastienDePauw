@@ -61,8 +61,8 @@ namespace filmAPI.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<String>> Register(RegisterDTO model)
         {
-            IdentityUser user = new IdentityUser { UserName = model.Email, Email = model.Email };
-            Gebruiker gebruiker = new Gebruiker { Email = model.Email, Naam = model.FirstName + model.LastName };
+            IdentityUser user = new IdentityUser { UserName = model.Email.ToLower(), Email = model.Email.ToLower() };
+            Gebruiker gebruiker = new Gebruiker { Email = model.Email.ToLower(), Naam = model.FirstName + model.LastName };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -83,7 +83,7 @@ namespace filmAPI.Controllers
         [HttpGet("checkusername")]
         public async Task<ActionResult<Boolean>> CheckAvailableUserName(string email)
         {
-            var user = await _userManager.FindByNameAsync(email);
+            var user = await _userManager.FindByNameAsync(email.ToLower());
             return user == null;
         }
 

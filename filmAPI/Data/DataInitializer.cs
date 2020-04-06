@@ -104,7 +104,6 @@ namespace filmAPI.Data
                 joker2.AddActeur(niro2);
                 joker2.AddRegisseur(phillips2);
 
-
                 Gebruiker jan = new Gebruiker("Jan Deprof","jan@msn.com");
                 jan.AddFilmWatchlist(eg1);
                 jan.AddFilmWatchlist(pf1);
@@ -112,7 +111,7 @@ namespace filmAPI.Data
                 _dbContext.Gebruikers.Add(jan);
                 await CreateUser(jan.Email, "P@ssword1");
 
-                Gebruiker seba = new Gebruiker("Sebastien De Pauw", "Sebastien@hotmail.be");
+                Gebruiker seba = new Gebruiker("Sebastien De Pauw", "sebastien@hotmail.be");
                 seba.AddFilmWatchlist(eg2);
                 seba.AddFilmWatchlist(pf2);
                 seba.AddFilmWatchlist(joker2);
