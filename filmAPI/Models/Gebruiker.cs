@@ -73,9 +73,9 @@ namespace filmAPI.Models
             if (!string.IsNullOrEmpty(titel))
                 movies = movies.Where(r => r.Titel.IndexOf(titel, System.StringComparison.OrdinalIgnoreCase) >= 0);
             if (!string.IsNullOrEmpty(acteurNaam))
-                movies = movies.Where(r => r.Acteurs.Any(i => i.Naam.Equals(acteurNaam, System.StringComparison.OrdinalIgnoreCase)));
+                movies = movies.Where(r => r.Detail.Acteurs.Any(i => i.Naam.Equals(acteurNaam, System.StringComparison.OrdinalIgnoreCase)));
             if (!string.IsNullOrEmpty(regisseurNaam))
-                movies = movies.Where(r => r.Regisseurs.Any(i => i.Naam.Equals(regisseurNaam, System.StringComparison.OrdinalIgnoreCase)));
+                movies = movies.Where(r => r.Detail.Regisseurs.Any(i => i.Naam.Equals(regisseurNaam, System.StringComparison.OrdinalIgnoreCase)));
             return movies.OrderBy(r => r.Titel).ToList();
         }
 

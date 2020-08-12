@@ -7,6 +7,7 @@ namespace filmAPI.Models
 {
     public interface IFilmRepository
     {
+        IEnumerable<Film> GetAll();
         Film GetBy(int id);
         void Update(Film film);
         void Delete(Film film);

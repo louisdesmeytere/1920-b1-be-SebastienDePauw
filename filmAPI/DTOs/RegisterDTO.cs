@@ -9,11 +9,11 @@ namespace filmAPI.DTOs
     public class RegisterDTO : LoginDTO
     {
         [Required]
-        [StringLength(200)]
-        public String FirstName { get; set; }
+        [StringLength(20)]
+        public string Voornaam { get; set; }
         [Required]
-        [StringLength(250)]
-        public String LastName { get; set; }
+        [StringLength(20)]
+        public string Achternaam { get; set; }
         [Required]
         [Compare("Password")]
         [RegularExpression("((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%?=*&]).{8,})",

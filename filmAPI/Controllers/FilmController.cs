@@ -27,31 +27,36 @@ namespace filmAPI.Controllers
             _filmRepo = filmRepository;
         }
 
-        // GET: api/Films/1
+        // GET: api/Film/1
         /// <summary>
         /// Geeft de details van een film in uw watchlist terug
         /// </summary>
-        /// /// <param name="id">de id van de film waarvan de details getoond moeten worden</param>
+        /// <param name="id">de id van de film waarvan de details getoond moeten worden</param>
         /// <returns>een film</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Film GetFilmsWatchlist(int id)
         {
             Gebruiker g = _gebruikerRepo.GetBy(User.Identity.Name);
-
             Film f = g.GetFilmWatchlistBy(id);
-            if (f == null)
-                NotFound();
             return f;
         }
 
-        // GET: api/Films
+        // GET: api/Film
         /// <summary>
         /// Geef alle films in watchlist terug geordend op titel
         /// </summary>
         /// <returns>array van films</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IEnumerable<Film> GetFilmsWatchlist(string titel = null, string acteurNaam = null, string regisseurNaam = null)
         {
             Gebruiker g = _gebruikerRepo.GetBy(User.Identity.Name);
@@ -60,41 +65,53 @@ namespace filmAPI.Controllers
             return g.GetFilmWatchlistBy(titel, acteurNaam, regisseurNaam);
         }
 
-        // PUT: api/Films/1
+        // PUT: api/Film/1
         /// <summary>
         /// Een film aanpassen
         /// </summary>
         /// <param name="id">id van de film die moet aangepast worden</param>
         /// <param name="film">de herziene film</param>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult PutFilm(int id, Film film)
         {
             if (id != film.Id) return BadRequest();
+            Film f = _filmRepo.GetBy(id);
+            f.Update(film);
             _filmRepo.Update(film);
             _filmRepo.SaveChanges();
             return NoContent();
         }
 
-        // POST: api/Films
+        // POST: api/Film
         /// <summary>
         /// Voegt een film toe aan uw watchlist
         /// </summary>
         /// <param name="film">de nieuwe film</param>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<Film> PostFilm(FilmDTO film)
         {
             Gebruiker g = _gebruikerRepo.GetBy(User.Identity.Name);
-            Film filmToCreate = new Film() { Titel = film.Titel, Beschrijving = film.Beschrijving, Storyline = film.Storyline, Jaar = film.Jaar, Minuten = film.Minuten, Categorie = film.Categorie };
-            foreach (var i in film.Acteurs)
+            Detail detail = new Detail(film.Detail.Beschrijving, film.Detail.Storyline);
+            if (film.Detail.Rating != null) { detail.AddRating(film.Detail.Rating.Value); }
+            
+            Film filmToCreate = new Film() { Titel = film.Titel, Jaar = film.Jaar, Minuten = film.Minuten, Categorie = film.Categorie, Detail = detail };
+            foreach (var i in film.Detail.Acteurs)
             {
                 if (i.Sterfdatum == null) { filmToCreate.AddActeur(new Acteur(i.Naam, i.Geboortedatum)); }
                 else { filmToCreate.AddActeur(new Acteur(i.Naam, i.Geboortedatum, i.Sterfdatum.Value)); }
             }
-            foreach (var i in film.Regisseurs)
+            foreach (var i in film.Detail.Regisseurs)
             {
                 if (i.Sterfdatum == null) { filmToCreate.AddRegisseur(new Regisseur(i.Naam, i.Geboortedatum)); }
                 else { filmToCreate.AddRegisseur(new Regisseur(i.Naam, i.Geboortedatum, i.Sterfdatum.Value)); }
@@ -106,16 +123,19 @@ namespace filmAPI.Controllers
             return CreatedAtAction(nameof(GetFilmsWatchlist), new { id = filmToCreate.Id }, filmToCreate);
         }
 
-          // DELETE: api/Films/
+          // DELETE: api/Film/1
           /// <summary>
           /// Een film deleten
           /// </summary>
           /// <param name="id">het id van de film die je wil deleten</param>
           [HttpDelete("{id}")]
-          [ProducesResponseType(StatusCodes.Status200OK)]
-          [ProducesResponseType(StatusCodes.Status400BadRequest)]
-          [ProducesResponseType(StatusCodes.Status404NotFound)]
-          public ActionResult<Film> DeleteMovie(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<Film> DeleteMovie(int id)
           {
               Film film = _filmRepo.GetBy(id);
               if (film == null)
@@ -127,7 +147,7 @@ namespace filmAPI.Controllers
               return film;
           }
 
-        /* // GET: api/Films/1
+        /* // GET: api/Film/1
          /// <summary>
          /// Geeft de film terug met het opgegeven id
          /// </summary>

@@ -18,8 +18,12 @@ namespace filmAPI.Data.Repositories
 
         public Film GetBy(int id)
         {
-            Film f = _film.Include(e => e.Acteurs).Include(e => e.Regisseurs).SingleOrDefault(c => c.Id == id);
+            Film f = _film.Include(e => e.Detail).ThenInclude(e => e.Acteurs).Include(e => e.Detail).ThenInclude(e => e.Regisseurs).SingleOrDefault(c => c.Id == id);
             return f;
+        }
+
+        public IEnumerable<Film> GetAll() {
+            return _film.Include(e => e.Detail).ThenInclude(e => e.Acteurs).Include(e => e.Detail).ThenInclude(e => e.Regisseurs);
         }
 
         public void Delete(Film film)

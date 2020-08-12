@@ -18,13 +18,13 @@ namespace filmAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountsController : ControllerBase
+    public class AccountController : ControllerBase
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IGebruikerRepository _gebruikerRepository;
         private readonly IConfiguration _config;
-        public AccountsController( SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IGebruikerRepository gebruikerRepository, IConfiguration config)
+        public AccountController( SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IGebruikerRepository gebruikerRepository, IConfiguration config)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -38,6 +38,7 @@ namespace filmAPI.Controllers
         /// <param name="login">de datails van de login </param>
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<String>> CreateToken(LoginDTO login)
         {
             var user = await _userManager.FindByNameAsync(login.Email);
@@ -56,13 +57,14 @@ namespace filmAPI.Controllers
         /// <summary>
         /// Registreer
         /// </summary>
-        /// <param name="model">de datails van de registratie </param>
+        /// <param name="model">de datails van de registratie</param>
         [AllowAnonymous]
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<String>> Register(RegisterDTO model)
         {
             IdentityUser user = new IdentityUser { UserName = model.Email.ToLower(), Email = model.Email.ToLower() };
-            Gebruiker gebruiker = new Gebruiker { Email = model.Email.ToLower(), Naam = model.FirstName + model.LastName };
+            Gebruiker gebruiker = new Gebruiker { Email = model.Email.ToLower(), Naam = model.Voornaam + model.Achternaam };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {

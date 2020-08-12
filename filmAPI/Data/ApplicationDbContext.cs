@@ -19,8 +19,6 @@ namespace filmAPI.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Film>().Property(p => p.Categorie).IsRequired(true);
-            modelBuilder.Entity<Film>().Property(p => p.Beschrijving).IsRequired(true);
-            modelBuilder.Entity<Film>().Property(p => p.Storyline).IsRequired(true);
 
             modelBuilder.Entity<Gebruiker>().Property(p => p.Email).IsRequired(true);
             modelBuilder.Entity<Gebruiker>().Property(p => p.Naam).IsRequired(true);

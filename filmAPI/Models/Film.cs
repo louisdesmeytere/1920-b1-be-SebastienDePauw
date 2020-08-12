@@ -10,63 +10,45 @@ namespace filmAPI.Models
     public class Film
     {
         public int Id { get; set; }
+
         [Required]
         public string Titel { get; set; }
-        public string Beschrijving { get; set; }
-        public string Storyline { get; set; }
+        
         public int Jaar { get; set; }
         public int Minuten { get; set; }
         public string Categorie {get;set;}
-        public double? Rating { get; set; }
-        [Required]
-        public List<Acteur> Acteurs { get; private set; }
-        [Required]
-        public List<Regisseur> Regisseurs { get;private set; }
+        public Detail Detail { get; set; }
 
+        public Film() { }
 
-        public Film() {
-            Acteurs = new List<Acteur>();
-            Regisseurs = new List<Regisseur>();
-        }
-
-        public Film(string titel, string beschrijving, string storyline, int jaar, int minuten, string categorie) : this()
-        {
+        public Film(string titel, int jaar, int minuten, string categorie, Detail detail) : this()
+        {  
             Titel = titel;
-            Beschrijving = beschrijving;
-            Storyline = storyline;
             Jaar = jaar;
             Minuten = minuten;
             Categorie = categorie;
+            Detail = detail;
         }
 
-        public Film(string titel, string beschrijving, string storyline, int jaar, int minuten, string categorie, double rating) : this(titel,beschrijving, storyline, jaar, minuten, categorie)
-        {
-            Rating = rating;
-        }
+        public void AddActeur(Acteur acteur) => Detail.AddActeur(acteur);
+        public void RemoveActeur(Acteur acteur) => Detail.RemoveActeur(acteur);
+        public void UpdateActeur(Acteur acteur) => Detail.UpdateActeur(acteur);
+        public Acteur GetActeurById(int id) => Detail.GetActeurById(id);
 
-        public void AddActeur(Acteur acteur) => Acteurs.Add(acteur);
-        public void RemoveActeur (Acteur acteur) => Acteurs.Remove(acteur);
-        public void UpdateActeur(Acteur acteur) => Acteurs.Where(a => a.Id == acteur.Id).ToList().ForEach(s => s = acteur);
-        public Acteur GetActeurById(int id) => Acteurs.SingleOrDefault(i => i.Id == id);
+        public void AddRegisseur(Regisseur regisseur) => Detail.AddRegisseur(regisseur);
+        public void RemoveRegisseur(Regisseur regisseur) => Detail.RemoveRegisseur(regisseur);
+        public void UpdateRegisseur(Regisseur regisseur) => Detail.UpdateRegisseur(regisseur);
+        public Regisseur GetRegisseurById(int id) => Detail.GetRegisseurById(id);
 
-        public void AddRegisseur(Regisseur regisseur) => Regisseurs.Add(regisseur);
-        public void RemoveRegisseur(Regisseur regisseur) => Regisseurs.Remove(regisseur);
-        public void UpdateRegisseur(Regisseur regisseur) => Regisseurs.Where(a => a.Id == regisseur.Id).ToList().ForEach(s => s = regisseur);
-        public Regisseur GetRegisseurById(int id) => Regisseurs.SingleOrDefault(i => i.Id == id);
-        
-        public void AddRating(double rating) =>  Rating = rating;
+        public void AddRating(double rating) => Detail.AddRating(rating);
 
         internal void Update(Film film)
         {
             Titel = film.Titel;
-            Beschrijving = film.Beschrijving;
-            Storyline = film.Storyline;
             Jaar = film.Jaar;
             Minuten = film.Minuten;
             Categorie = film.Categorie;
-            Rating = film.Rating;
-            film.Acteurs.ForEach(e => UpdateActeur(e));
-            film.Regisseurs.ForEach(e => UpdateRegisseur(e));
+            Detail.Update(film);
         }
     }
 }
